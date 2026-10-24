@@ -1,0 +1,14 @@
+product: jvm/app
+
+settings:
+  ktor: enabled
+  jvm:
+    mainClass: app.roleparty.application.backend.MainKt
+    jdk:
+      version: 25
+
+dependencies:
+  - $ktor.server.netty
+  - $ktor.server.config.yaml
+  - $ktor.server.callLogging
+  - $libs.logback.classic
