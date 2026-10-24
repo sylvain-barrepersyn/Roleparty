@@ -1,0 +1,11 @@
+product: jvm/app
+
+settings:
+  compose: enabled
+  jvm:
+    mainClass: app.roleparty.application.frontend.MainKt
+    jdk:
+      version: 25
+
+dependencies:
+  - $compose.foundation
