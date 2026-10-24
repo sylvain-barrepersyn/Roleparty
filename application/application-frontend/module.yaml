@@ -6,3 +6,6 @@ apply:
 settings:
   jvm:
     mainClass: app.roleparty.application.frontend.MainKt
+
+dependencies:
+  - //core/core-designsystem
