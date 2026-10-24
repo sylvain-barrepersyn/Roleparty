@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun Icon(
     vector: IconVector,
-    contentDescription: String,
+    contentDescription: String? = null,
     tint: Color,
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
