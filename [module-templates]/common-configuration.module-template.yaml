@@ -1,0 +1,4 @@
+settings:
+  jvm:
+    jdk:
+      version: 25
