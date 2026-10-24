@@ -1,0 +1,8 @@
+apply:
+  - ./common-configuration.module-template.yaml
+
+settings:
+  compose: enabled
+
+dependencies:
+  - $compose.foundation

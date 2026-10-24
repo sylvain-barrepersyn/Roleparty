@@ -1,12 +1,8 @@
 product: jvm/app
 
 apply:
-  - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/compose-project.module-template.yaml
 
 settings:
-  compose: enabled
   jvm:
     mainClass: app.roleparty.application.frontend.MainKt
-
-dependencies:
-  - $compose.foundation

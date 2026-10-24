@@ -1,10 +1,4 @@
 product: jvm/lib
 
 apply:
-  - //[module-templates]/common-configuration.module-template.yaml
-
-settings:
-  compose: enabled
-
-dependencies:
-  - $compose.foundation
+  - //[module-templates]/compose-project.module-template.yaml
