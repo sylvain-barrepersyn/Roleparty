@@ -11,12 +11,11 @@ import app.roleparty.core.designsystem.theme.Theme
 fun BodyText(
     text: String,
     modifier: Modifier = Modifier,
-    style: TextStyle = Theme.typography.body,
     color: Color = Theme.colors.textSecondary,
 ) {
     BasicText(
         text = text,
         modifier = modifier,
-        style = style.copy(color = color)
+        style = Theme.typography.body.copy(color = color)
     )
 }
