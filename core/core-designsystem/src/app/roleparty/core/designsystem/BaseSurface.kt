@@ -23,9 +23,9 @@ fun BaseSurface(
             val backgroundColor = ElevationTokens.backgroundColor(0)
 
             Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(backgroundColor),
+                modifier = Modifier
+                    .background(backgroundColor)
+                    .then(modifier),
                 contentAlignment = contentAlignment,
                 content = content
             )
