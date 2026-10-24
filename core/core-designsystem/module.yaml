@@ -2,3 +2,8 @@ product: jvm/lib
 
 apply:
   - //[module-templates]/compose-project.module-template.yaml
+
+settings:
+  compose:
+    resources:
+      packageName: app.roleparty.designsystem.resources

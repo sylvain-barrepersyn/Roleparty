@@ -6,3 +6,4 @@ settings:
 
 dependencies:
   - $compose.foundation
+  - $compose.components.resources
