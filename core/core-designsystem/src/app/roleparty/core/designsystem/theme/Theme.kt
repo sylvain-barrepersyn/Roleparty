@@ -5,9 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 
-private val LocalAppColors = staticCompositionLocalOf { lightColors }
+private val LocalColors = staticCompositionLocalOf { lightColors }
 
-val LocalAppTypography = staticCompositionLocalOf<Typography> { error("No typography provided") }
+private val LocalTypography = staticCompositionLocalOf<Typography> { error("No typography provided") }
 
 @Composable
 internal fun provideTheme(
@@ -18,13 +18,13 @@ internal fun provideTheme(
     val typography = rememberAppTypography()
 
     CompositionLocalProvider(
-        LocalAppColors provides colors,
-        LocalAppTypography provides typography,
+        LocalColors provides colors,
+        LocalTypography provides typography,
         content = content
     )
 }
 
 object Theme {
-    val colors @Composable get() = LocalAppColors.current
-    val typography @Composable get() = LocalAppTypography.current
+    val colors @Composable get() = LocalColors.current
+    val typography @Composable get() = LocalTypography.current
 }
