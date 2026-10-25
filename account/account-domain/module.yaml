@@ -2,3 +2,7 @@ product: jvm/lib
 
 apply:
   - //[module-templates]/common-configuration.module-template.yaml
+
+dependencies:
+  - //communication/communication-commons
+  - //account/account-commons
