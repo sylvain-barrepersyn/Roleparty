@@ -1,4 +1,7 @@
 settings:
+  kotlin:
+    optIns:
+      - kotlin.uuid.ExperimentalUuidApi
   jvm:
     jdk:
       version: 25
