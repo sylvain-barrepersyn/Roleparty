@@ -1,3 +1,4 @@
 modules:
+  - account/*
   - application/*
   - core/*
