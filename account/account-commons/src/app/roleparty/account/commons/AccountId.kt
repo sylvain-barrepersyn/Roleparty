@@ -10,6 +10,6 @@ value class AccountId private constructor(private val value: String): Comparable
 
     companion object {
         fun generate() = AccountId(Uuid.generateV7().toString())
-        fun fromString(value: String) = AccountId(value)
+        fun from(value: String) = AccountId(value)
     }
 }
