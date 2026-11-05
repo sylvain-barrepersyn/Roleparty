@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 internal val LocalElevationLevel = staticCompositionLocalOf { 0 }
 
-internal object ElevationTokens {
+internal object Elevation {
     private const val INITIAL_BACKGROUND_LIGHTNESS = 0.08f
     private const val INITIAL_BORDER_LIGHTNESS = 0.10f
     private const val LIGHTNESS_STEP = 0.06f

@@ -17,11 +17,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
-import app.roleparty.core.designsystem.elevation.ElevationTokens
+import app.roleparty.core.designsystem.elevation.Elevation
 import app.roleparty.core.designsystem.elevation.LocalElevationLevel
 
 @Composable
@@ -40,35 +41,47 @@ fun Surface(
     val currentLevel = LocalElevationLevel.current
     val newLevel = currentLevel + 1
 
-    val baseBackgroundColor = remember(newLevel) { ElevationTokens.backgroundColor(newLevel) }
+    val baseBackgroundColor = remember(newLevel) { Elevation.backgroundColor(newLevel) }
+    val hoverBackgroundColor = remember(baseBackgroundColor) { baseBackgroundColor }
+    val pressedBackgroundColor = Elevation.backgroundColor(currentLevel)
 
-    val targetBackgroundColor = when {
-        isPressed -> baseBackgroundColor.copy(alpha = 0.80f)
-        isHovered -> baseBackgroundColor.copy(alpha = 0.90f)
+    val backgroundColor = when {
+        isPressed -> pressedBackgroundColor
+        isHovered -> hoverBackgroundColor
         else -> baseBackgroundColor
     }
 
-    val backgroundColor by animateColorAsState(
-        targetValue = targetBackgroundColor,
-        animationSpec = tween(durationMillis = 120)
-    )
+    val baseBorderColor = remember(newLevel) { Elevation.borderColor(newLevel) }
+    val hoverBorderColor = remember(baseBorderColor) { baseBorderColor }
+    val pressedBorderColor = remember(baseBorderColor) { baseBorderColor }
 
-    val borderColor = remember(newLevel) { ElevationTokens.borderColor(newLevel) }
+    val borderColor = when {
+        isPressed -> pressedBorderColor
+        isHovered -> hoverBorderColor
+        else -> baseBorderColor
+    }
+
+    val isClickable = onClick != null && enabled
 
     CompositionLocalProvider(LocalElevationLevel provides newLevel) {
         Box(
             modifier = modifier
                 .background(backgroundColor, shape)
                 .border(2.dp, borderColor, shape)
-                .let {
-                    if (onClick != null && enabled) it.clickable(
-                        interactionSource = interactionSource,
-                        enabled = enabled,
-                        indication = null,
-                        onClick = onClick
-                    ) else it
-                }
-                .let { if (onClick != null && enabled) it.pointerHoverIcon(PointerIcon.Hand) else it },
+                .then(
+                    if (isClickable) {
+                        Modifier
+                            .clickable(
+                                interactionSource = interactionSource,
+                                enabled = true,
+                                indication = null,
+                                onClick = onClick
+                            )
+                            .pointerHoverIcon(PointerIcon.Hand)
+                    } else {
+                        Modifier
+                    }
+                ),
             contentAlignment = contentAlignment,
             content = content
         )
