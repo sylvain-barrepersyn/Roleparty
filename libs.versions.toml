@@ -1,5 +1,8 @@
 [versions]
+kotest = "6.2.6"
 logback-classic = "1.6.5"
 
 [libraries]
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
