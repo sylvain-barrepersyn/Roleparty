@@ -1,26 +1,21 @@
 package app.roleparty.account.domain.port.secondary
 
 import app.roleparty.account.commons.AccountId
-import app.roleparty.account.domain.model.AccountEvent
-import app.roleparty.account.domain.model.AccountHistory
-import app.roleparty.account.domain.model.AccountVersion
+import app.roleparty.account.commons.AccountRole
+import app.roleparty.account.domain.model.Account
+import app.roleparty.account.domain.model.AccountError.EmailAddressAlreadyUsed
 import app.roleparty.communication.commons.EmailAddress
 import app.roleparty.core.commons.Outcome
 
 interface Accounts {
 
-    suspend fun append(
-        accountId: AccountId,
-        expectedVersion: AccountVersion,
-        events: List<AccountEvent>,
-    ): Outcome<Unit, AccountAppendFailure>
+    suspend fun register(account: Account): Outcome<Unit, EmailAddressAlreadyUsed>
 
-    suspend fun load(accountId: AccountId): AccountHistory
-}
+    suspend fun changeEmailAddress(accountId: AccountId, emailAddress: EmailAddress): Outcome<Unit, EmailAddressAlreadyUsed>
 
-sealed interface AccountAppendFailure {
+    suspend fun changeRole(accountId: AccountId, role: AccountRole)
 
-    data object VersionConflict : AccountAppendFailure
+    suspend fun findById(accountId: AccountId): Account?
 
-    data class EmailAddressAlreadyUsed(val emailAddress: EmailAddress) : AccountAppendFailure
+    suspend fun findByEmailAddress(emailAddress: EmailAddress): Account?
 }

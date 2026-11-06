@@ -9,8 +9,6 @@ sealed interface AccountError {
 
     data class AccountNotFound(val accountId: AccountId) : AccountError
 
-    data class ConcurrentModification(val accountId: AccountId) : AccountError
-
     data object AdminRoleRequired : AccountError
 
     data object OwnRoleChangeForbidden : AccountError

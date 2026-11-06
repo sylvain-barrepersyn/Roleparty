@@ -2,12 +2,6 @@ product: jvm/lib
 
 apply:
   - //[module-templates]/common-configuration.module-template.yaml
-  - //[module-templates]/serialization-configuration.module-template.yaml
-
-settings:
-  kotlin:
-    serialization:
-      format: json
 
 dependencies:
   - //core/core-database: exported

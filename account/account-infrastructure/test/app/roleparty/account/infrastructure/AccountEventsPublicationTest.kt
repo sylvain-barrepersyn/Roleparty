@@ -1,7 +1,6 @@
 package app.roleparty.account.infrastructure
 
 import app.roleparty.account.commons.AccountRole
-import app.roleparty.account.domain.port.primary.AccountRegistrationCommand
 import app.roleparty.account.event.AccountRegistered
 import app.roleparty.communication.commons.EmailAddress
 import app.roleparty.core.commons.Outcome
@@ -54,13 +53,13 @@ class AccountEventsPublicationTest : FunSpec({
             val email = EmailAddress.from("gimli@roleparty.app")
 
             // When
-            val outcome = module.accountRegistrationCommandHandler.handle(AccountRegistrationCommand(email))
+            val outcome = module.useCases.register(email)
 
             // Then
             val accountId = (outcome as Outcome.Success).value
             val delivery = withContext(Dispatchers.IO) { withTimeout(15.seconds) { received.await() } }
             delivery.second shouldBe AccountRegistered(accountId, email, AccountRole.USER)
-            delivery.first.toString() shouldBe TestPostgres.sql("select id from account.event where account_id = '$accountId'").single()
+            delivery.first.toString() shouldBe TestPostgres.sql("select id from technical.event where payload->>'accountId' = '$accountId'").single()
         }
 
         rabbitMqContainer.stop()

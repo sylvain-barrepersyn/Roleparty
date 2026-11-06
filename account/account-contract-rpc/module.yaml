@@ -1,0 +1,14 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  kotlin:
+    rpc: enabled
+
+dependencies:
+  - $kotlin.rpc.core: exported
+  - //account/account-commons: exported
+  - //communication/communication-commons: exported

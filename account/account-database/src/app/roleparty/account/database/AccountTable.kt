@@ -3,13 +3,12 @@ package app.roleparty.account.database
 import app.roleparty.account.commons.AccountId
 import app.roleparty.account.commons.AccountRole
 import app.roleparty.communication.commons.EmailAddress
-import kotlin.uuid.Uuid
 import org.jetbrains.exposed.v1.core.Table
 
-object AccountOverviewTable : Table("$SCHEMA_ACCOUNT.overview") {
-    val accountId = uuid("account_id").transform(
-        wrap = { AccountId.from(it.toString()) },
-        unwrap = { Uuid.parse(it.toString()) },
+object AccountTable : Table("$SCHEMA_ACCOUNT.account") {
+    val id = uuid("id").transform(
+        wrap = { AccountId.from(it) },
+        unwrap = { it.toUuid() },
     )
     val emailAddress = text("email_address").transform(
         wrap = { EmailAddress.from(it) },
@@ -20,5 +19,5 @@ object AccountOverviewTable : Table("$SCHEMA_ACCOUNT.overview") {
         unwrap = { it.name },
     )
 
-    override val primaryKey = PrimaryKey(accountId)
+    override val primaryKey = PrimaryKey(id)
 }

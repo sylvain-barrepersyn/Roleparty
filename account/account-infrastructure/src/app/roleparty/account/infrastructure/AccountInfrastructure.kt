@@ -17,12 +17,11 @@ private const val RPC_PATH = "/rpc/account"
 fun loadAccountModule(postgres: Postgres, clock: Clock = Clock.System): AccountModule {
     postgres.setUpAccountSchema()
 
-    val accounts = InfrastructuredAccounts(postgres.database)
-    return AccountModule(accounts = accounts, accountOverviews = accounts, clock = clock)
+    return AccountModule(InfrastructuredAccounts(postgres.database, clock))
 }
 
 fun Application.serveAccountRpc(module: AccountModule, env: Map<String, String> = System.getenv()) {
-    val controller = AccountRpcController(module.accountRegistrationCommandHandler, module.accountOverviewQueryHandler)
+    val controller = AccountRpcController(module.useCases)
 
     serveRpc(RPC_PATH, env.requireValueOrFile(RPC_TOKEN)) {
         registerService<AccountRpcService> { controller }

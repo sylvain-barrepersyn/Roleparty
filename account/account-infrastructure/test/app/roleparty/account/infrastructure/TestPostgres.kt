@@ -22,7 +22,7 @@ internal object TestPostgres {
     }
 
     suspend fun clear() {
-        suspendTransaction(postgres.database) { exec("TRUNCATE account.event, account.overview, technical.event") }
+        suspendTransaction(postgres.database) { exec("TRUNCATE account.account, technical.event") }
     }
 
     fun sql(query: String): List<String> =
