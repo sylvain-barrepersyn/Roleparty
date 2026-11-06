@@ -52,7 +52,7 @@ fun Field(
     val borderColor = when {
         !enabled -> null
         visibleError != null -> Theme.colors.error
-        focused -> Theme.colors.primary
+        focused -> Theme.colors.textSecondary
         else -> null
     }
     val errorSemantics = if (visibleError != null) Modifier.semantics { error(visibleError) } else Modifier
