@@ -5,4 +5,5 @@ apply:
   - ../../[module-templates]/serialization-configuration.module-template.yaml
 
 dependencies:
+  - //core/core-commons: exported
   - commons-validator:commons-validator:1.11.0
