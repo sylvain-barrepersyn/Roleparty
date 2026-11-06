@@ -25,3 +25,5 @@ internal val lightColors = Colors(
 )
 
 internal fun Color.disabled(): Color = copy(alpha = 0.5f)
+
+internal fun Color.disabledIf(condition: Boolean): Color = if (condition) disabled() else this

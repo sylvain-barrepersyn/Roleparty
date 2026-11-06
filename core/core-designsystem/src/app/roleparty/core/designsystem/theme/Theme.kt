@@ -19,20 +19,19 @@ fun RolepartyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    val colors = if (darkTheme) darkColors else lightColors
+
     CompositionLocalProvider(
-        LocalColors provides if (darkTheme) darkColors else lightColors,
+        LocalColors provides colors,
         LocalElevation provides if (darkTheme) darkElevation else lightElevation,
-    ) {
-        CompositionLocalProvider(
-            LocalTypography provides rememberAppTypography(),
-            content = content
-        )
-    }
+        LocalTypography provides rememberAppTypography(colors),
+        content = content,
+    )
 }
 
 object Theme {
     val colors: Colors @Composable get() = LocalColors.current
     val typography: Typography @Composable get() = LocalTypography.current
-    val shapes: Shapes = defaultShapes
+    val shapes = Shapes
     val borderWidth: Dp = 2.dp
 }

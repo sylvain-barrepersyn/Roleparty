@@ -5,13 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
-@ConsistentCopyVisibility
-data class Shapes internal constructor(
-    val rounded: Shape,
-    val circle: Shape,
-)
-
-internal val defaultShapes = Shapes(
-    rounded = RoundedCornerShape(8.dp),
-    circle = CircleShape,
-)
+object Shapes {
+    val rounded: Shape = RoundedCornerShape(8.dp)
+    val circle: Shape = CircleShape
+}

@@ -22,7 +22,7 @@ data class Typography internal constructor(
 )
 
 @Composable
-internal fun rememberAppTypography(): Typography {
+internal fun rememberAppTypography(colors: Colors): Typography {
     val body = FontFamily(
         Font(
             resource = Res.font.Libron_Regular,
@@ -64,8 +64,8 @@ internal fun rememberAppTypography(): Typography {
         )
     )
 
-    val textPrimary = Theme.colors.textPrimary
-    val textSecondary = Theme.colors.textSecondary
+    val textPrimary = colors.textPrimary
+    val textSecondary = colors.textSecondary
 
     return remember(body, title, textPrimary, textSecondary) {
         Typography(

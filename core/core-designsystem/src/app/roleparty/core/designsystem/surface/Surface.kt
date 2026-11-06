@@ -54,10 +54,15 @@ fun Surface(
     shape = shape,
     contentAlignment = contentAlignment,
     enabled = enabled,
-    onClick = onClick,
-    role = role,
+    interaction = SurfaceInteraction.Clickable(onClick, role),
     content = content,
 )
+
+internal sealed interface SurfaceInteraction {
+    data object None : SurfaceInteraction
+    data object Hoverable : SurfaceInteraction
+    data class Clickable(val onClick: () -> Unit, val role: Role?) : SurfaceInteraction
+}
 
 @Composable
 internal fun SurfaceContainer(
@@ -65,9 +70,7 @@ internal fun SurfaceContainer(
     shape: Shape,
     contentAlignment: Alignment,
     enabled: Boolean = true,
-    onClick: (() -> Unit)? = null,
-    role: Role? = null,
-    reactsToHover: Boolean = false,
+    interaction: SurfaceInteraction = SurfaceInteraction.None,
     borderColor: Color? = null,
     content: @Composable BoxScope.() -> Unit,
 ) {
@@ -82,19 +85,18 @@ internal fun SurfaceContainer(
     val backgroundColor = elevation.backgroundColor(if (isPressed) currentLevel else newLevel)
     val resolvedBorderColor = borderColor ?: elevation.borderColor(if (enabled && isHovered) newLevel + 1 else newLevel)
 
-    val interactions = when {
-        onClick != null -> Modifier
+    val interactionModifier = when (interaction) {
+        SurfaceInteraction.None -> Modifier
+        SurfaceInteraction.Hoverable -> Modifier.hoverable(interactionSource = interactionSource, enabled = enabled)
+        is SurfaceInteraction.Clickable -> Modifier
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 enabled = enabled,
-                role = role,
-                onClick = onClick
+                role = interaction.role,
+                onClick = interaction.onClick
             )
             .then(if (enabled) Modifier.pointerHoverIcon(PointerIcon.Hand) else Modifier)
-
-        reactsToHover -> Modifier.hoverable(interactionSource = interactionSource, enabled = enabled)
-        else -> Modifier
     }
 
     CompositionLocalProvider(
@@ -105,7 +107,7 @@ internal fun SurfaceContainer(
             modifier = modifier
                 .background(backgroundColor, shape)
                 .border(Theme.borderWidth, resolvedBorderColor, shape)
-                .then(interactions),
+                .then(interactionModifier),
             contentAlignment = contentAlignment,
             content = content
         )

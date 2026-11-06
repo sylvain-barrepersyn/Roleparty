@@ -18,14 +18,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.roleparty.core.designsystem.divider.HorizontalDivider
 import app.roleparty.core.designsystem.icon.Icon
 import app.roleparty.core.designsystem.icon.IconVector
+import app.roleparty.core.designsystem.icon.iconTint
 import app.roleparty.core.designsystem.surface.SurfaceContainer
+import app.roleparty.core.designsystem.surface.SurfaceInteraction
 import app.roleparty.core.designsystem.text.Text
 import app.roleparty.core.designsystem.theme.Theme
-import app.roleparty.core.designsystem.theme.disabled
+import app.roleparty.core.designsystem.theme.disabledIf
+import app.roleparty.designsystem.resources.Res
+import app.roleparty.designsystem.resources.required as requiredString
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun Field(
@@ -34,27 +41,30 @@ fun Field(
     icon: IconVector? = null,
     enabled: Boolean = true,
     required: Boolean = false,
-    requiredDescription: String? = null,
-    isError: Boolean = false,
+    error: String? = null,
     shape: Shape = Theme.shapes.rounded,
-    valueDisplay: (@Composable RowScope.() -> Unit)? = null,
+    headerTrailing: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     var focused by remember { mutableStateOf(false) }
 
+    val visibleError = error.takeIf { enabled }
     val borderColor = when {
         !enabled -> null
-        isError -> Theme.colors.error
+        visibleError != null -> Theme.colors.error
         focused -> Theme.colors.primary
         else -> null
     }
+    val errorSemantics = if (visibleError != null) Modifier.semantics { error(visibleError) } else Modifier
 
     SurfaceContainer(
-        modifier = modifier.onFocusChanged { focused = it.hasFocus },
+        modifier = modifier
+            .onFocusChanged { focused = it.hasFocus }
+            .then(errorSemantics),
         shape = shape,
         contentAlignment = Alignment.TopStart,
         enabled = enabled,
-        reactsToHover = true,
+        interaction = SurfaceInteraction.Hoverable,
         borderColor = borderColor,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -63,19 +73,21 @@ fun Field(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                FieldLabel(
-                    label = label,
-                    icon = icon,
-                    enabled = enabled,
-                    focused = focused,
-                    required = required,
-                    requiredDescription = requiredDescription,
-                )
+                FieldLabel(label = label, icon = icon, enabled = enabled, focused = focused, required = required)
                 Spacer(modifier = Modifier.weight(1f))
-                valueDisplay?.invoke(this)
+                headerTrailing?.invoke(this)
             }
             HorizontalDivider()
             Column(modifier = Modifier.fillMaxWidth(), content = content)
+            visibleError?.let {
+                HorizontalDivider()
+                Text(
+                    text = it,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                    style = Theme.typography.bodySmall,
+                    color = Theme.colors.error,
+                )
+            }
         }
     }
 }
@@ -87,26 +99,26 @@ private fun FieldLabel(
     enabled: Boolean,
     focused: Boolean,
     required: Boolean,
-    requiredDescription: String?,
 ) {
-    val iconColor = if (enabled) Theme.colors.primary else Theme.colors.textSecondary.disabled()
-    val labelColor = when {
-        !enabled -> Theme.colors.textSecondary.disabled()
-        focused -> Theme.colors.textPrimary
-        else -> Theme.colors.textSecondary
-    }
+    val tint = iconTint(enabled)
+    val labelColor = (if (focused) Theme.colors.textPrimary else Theme.colors.textSecondary).disabledIf(!enabled)
 
     Row(
         modifier = Modifier.height(20.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        icon?.let { Icon(vector = it, tint = iconColor, size = 20.dp) }
+        icon?.let { Icon(vector = it, tint = tint, size = 20.dp) }
 
         Text(text = label, color = labelColor)
 
         if (required) {
-            Icon(vector = IconVector.ASTERISK, tint = iconColor, contentDescription = requiredDescription, size = 10.dp)
+            Icon(
+                vector = IconVector.ASTERISK,
+                tint = tint,
+                contentDescription = stringResource(Res.string.requiredString),
+                size = 10.dp,
+            )
         }
     }
 }
