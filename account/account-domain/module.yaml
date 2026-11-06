@@ -4,5 +4,9 @@ apply:
   - //[module-templates]/common-configuration.module-template.yaml
 
 dependencies:
-  - //communication/communication-commons
-  - //account/account-commons
+  - //core/core-commons: exported
+  - //communication/communication-commons: exported
+  - //account/account-commons: exported
+
+test-dependencies:
+  - //account/account-test
