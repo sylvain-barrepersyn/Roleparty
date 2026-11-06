@@ -23,6 +23,9 @@ data class AccountOverview private constructor(
     }
 
     companion object {
+        fun from(accountId: AccountId, emailAddress: EmailAddress, role: AccountRole) =
+            AccountOverview(accountId, emailAddress, role)
+
         fun from(events: List<AccountEvent>): AccountOverview {
             val registration = events.firstOrNull()
             val payload = registration?.payload
