@@ -31,7 +31,6 @@ class RabbitMq internal constructor(
     private var publicationChannel: Channel? = null
     private val declaredExchanges = mutableSetOf<String>()
 
-    /** Returns once the broker has confirmed it took responsibility for [message], and throws if it didn't. */
     suspend fun publish(message: RabbitMqMessage): Unit = publication.withLock {
         withContext(Dispatchers.IO) {
             val channel = openPublicationChannel()

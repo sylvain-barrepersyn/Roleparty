@@ -4,7 +4,6 @@ import kotlin.reflect.KClass
 import kotlin.uuid.Uuid
 import kotlinx.serialization.json.Json
 
-/** An event ready to be published, so that it can be stored first. */
 data class RabbitMqMessage(
     val id: Uuid,
     val exchange: String,

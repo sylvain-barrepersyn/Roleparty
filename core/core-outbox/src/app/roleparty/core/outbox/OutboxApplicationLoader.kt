@@ -7,7 +7,6 @@ import io.ktor.server.application.ApplicationStopping
 import kotlin.time.Clock
 import kotlinx.coroutines.launch
 
-/** Migrates the `technical` schema, holding the outbox, and starts publishing its events to RabbitMQ. */
 fun Application.loadOutbox(postgres: Postgres, rabbitMq: RabbitMq, clock: Clock = Clock.System) {
     postgres.migrate(TECHNICAL_SCHEMA)
 

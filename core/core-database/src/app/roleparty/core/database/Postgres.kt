@@ -11,10 +11,6 @@ class Postgres internal constructor(
     private val password: String,
 ) {
 
-    /**
-     * Applies the pending scripts of `resources/db/migration/<schema>` to [schema], creating it if needed, and records
-     * them in `<schema>.flyway_schema_history`. Flyway makes concurrently starting instances wait for each other.
-     */
     fun migrate(schema: String) {
         Flyway.configure()
             .dataSource(jdbcUrl, user, password)

@@ -8,10 +8,6 @@ import kotlin.uuid.Uuid
 import org.jetbrains.exposed.v1.r2dbc.R2dbcTransaction
 import org.jetbrains.exposed.v1.r2dbc.insert
 
-/**
- * Stores [event] in the transaction that changes the state it describes, so that it's published if and only if that
- * transaction commits.
- */
 suspend inline fun <reified E : RabbitMqEvent> R2dbcTransaction.enqueue(
     event: E,
     occurredAt: Instant,

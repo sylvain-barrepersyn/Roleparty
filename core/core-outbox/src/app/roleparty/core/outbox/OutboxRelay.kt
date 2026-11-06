@@ -33,10 +33,6 @@ private val POLL_INTERVAL = 1.seconds
 private val CLEANUP_INTERVAL = 1.hours
 internal val RETENTION = 7.days
 
-/**
- * Publishes stored events in order. Events can be published twice, if the relay stops between a publication and its
- * commit, but they're never lost as they're only marked as published once the broker has confirmed them.
- */
 internal class OutboxRelay(
     private val database: R2dbcDatabase,
     private val publish: suspend (RabbitMqMessage) -> Unit,
@@ -66,7 +62,6 @@ internal class OutboxRelay(
         }
     }
 
-    /** Only one relay works at a time across instances, as concurrent ones would mix up the order of events. */
     suspend fun publishPending(): Int = suspendTransaction(database) {
         if (!tryLock()) return@suspendTransaction 0
 
@@ -111,7 +106,6 @@ internal class OutboxRelay(
             }
             .toList()
 
-    /** A failure stops the batch, as publishing the next events would mix up their order. */
     private suspend fun tryPublish(message: RabbitMqMessage): Boolean =
         try {
             publish(message)

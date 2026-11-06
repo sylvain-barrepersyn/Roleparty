@@ -4,10 +4,6 @@ import org.slf4j.Logger
 
 private const val REMINDER_INTERVAL = 300
 
-/**
- * Keeps an outage readable, as the relay fails on every attempt until it ends: the first failure is logged in full,
- * then only a line every [REMINDER_INTERVAL] attempts and the recovery.
- */
 internal class RelayFailureLog(private val log: Logger) {
     private var consecutiveFailures = 0
 
