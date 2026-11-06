@@ -1,0 +1,17 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //core/core-commons
+  - $libs.amqp.client
+
+test-dependencies:
+  - $libs.testcontainers.rabbitmq

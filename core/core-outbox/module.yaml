@@ -1,0 +1,14 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-database: exported
+  - //core/core-rabbitmq: exported
+
+test-dependencies:
+  - $libs.logback.classic
+  - $libs.testcontainers.postgresql
+  - $libs.testcontainers.rabbitmq

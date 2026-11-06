@@ -1,0 +1,19 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+
+dependencies:
+  - //core/core-commons
+  - $libs.exposed.core: exported
+  - $libs.exposed.r2dbc: exported
+  - $libs.exposed.kotlin.datetime: exported
+  - $libs.exposed.json: exported
+  - $libs.flyway.core
+  - $libs.flyway.database.postgresql
+  - $libs.postgresql.driver
+  - $libs.postgresql.r2dbc
+  - $libs.r2dbc.pool
+
+test-dependencies:
+  - $libs.testcontainers.postgresql
