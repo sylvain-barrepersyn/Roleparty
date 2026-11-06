@@ -1,4 +1,4 @@
-package app.roleparty.core.designsystem.components.text
+package app.roleparty.core.designsystem.text
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -8,14 +8,15 @@ import androidx.compose.ui.text.TextStyle
 import app.roleparty.core.designsystem.theme.Theme
 
 @Composable
-fun BodyText(
+fun Text(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = Theme.colors.textSecondary,
+    style: TextStyle = Theme.typography.body,
+    color: Color = style.color,
 ) {
     BasicText(
         text = text,
         modifier = modifier,
-        style = Theme.typography.body.copy(color = color)
+        style = style.copy(color = color)
     )
 }

@@ -1,4 +1,4 @@
-package app.roleparty.core.designsystem.components.icon
+package app.roleparty.core.designsystem.icon
 
 import app.roleparty.designsystem.resources.*
 import org.jetbrains.compose.resources.DrawableResource
@@ -15,11 +15,11 @@ enum class IconVector(internal val drawableResource: DrawableResource) {
     CAMERA(Res.drawable.camera),
     CANCEL(Res.drawable.cancel),
     CATEGORY(Res.drawable.category),
+    CHARACTER_SHEET(Res.drawable.character_sheet),
     CLEAR(Res.drawable.clear),
     COMPENDIUM(Res.drawable.compendium),
     CONFIRM(Res.drawable.confirm),
     COPY(Res.drawable.copy),
-    CHARACTER_SHEET(Res.drawable.character_sheet),
     DELETE(Res.drawable.delete),
     DEV(Res.drawable.dev),
     EDIT(Res.drawable.edit),
@@ -29,19 +29,21 @@ enum class IconVector(internal val drawableResource: DrawableResource) {
     GOOGLE(Res.drawable.google),
     HAMMER(Res.drawable.hammer),
     INK_PEN(Res.drawable.ink_pen),
+    LOADER(Res.drawable.loader),
     MAGICAL(Res.drawable.magical),
     MAP(Res.drawable.map),
-    PEOPLE(Res.drawable.people),
     MONSTER(Res.drawable.monster),
     NEXT(Res.drawable.next),
     NOTIFICATION(Res.drawable.notification),
     OPEN_SHEET(Res.drawable.open_sheet),
     PAUSE(Res.drawable.pause),
+    PEOPLE(Res.drawable.people),
     PLAY(Res.drawable.play),
     PREVIOUS(Res.drawable.previous),
     PRINT_STACK(Res.drawable.print_stack),
     PUPPET(Res.drawable.puppet),
     REFRESH(Res.drawable.refresh),
+    ROLEPARTY(Res.drawable.roleparty),
     SEARCH(Res.drawable.search),
     SETTINGS(Res.drawable.settings),
     SPEAK(Res.drawable.speak),
@@ -52,5 +54,5 @@ enum class IconVector(internal val drawableResource: DrawableResource) {
     TAG(Res.drawable.tag),
     TEXT_BOLD(Res.drawable.text_bold),
     TEXT_ITALIC(Res.drawable.text_italic),
-    UPLOAD(Res.drawable.upload)
+    UPLOAD(Res.drawable.upload),
 }

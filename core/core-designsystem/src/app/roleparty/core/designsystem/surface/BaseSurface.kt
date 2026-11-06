@@ -1,4 +1,4 @@
-package app.roleparty.core.designsystem
+package app.roleparty.core.designsystem.surface
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -7,9 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.roleparty.core.designsystem.elevation.Elevation
+import app.roleparty.core.designsystem.elevation.LocalElevation
 import app.roleparty.core.designsystem.elevation.LocalElevationLevel
-import app.roleparty.core.designsystem.theme.provideTheme
 
 @Composable
 fun BaseSurface(
@@ -17,17 +16,16 @@ fun BaseSurface(
     contentAlignment: Alignment = Alignment.TopStart,
     content: @Composable BoxScope.() -> Unit
 ) {
-    provideTheme {
-        CompositionLocalProvider(LocalElevationLevel provides 0) {
-            val backgroundColor = Elevation.backgroundColor(0)
+    val elevation = LocalElevation.current
 
-            Box(
-                modifier = Modifier
-                    .background(backgroundColor)
-                    .then(modifier),
-                contentAlignment = contentAlignment,
-                content = content
-            )
-        }
+    CompositionLocalProvider(
+        LocalElevationLevel provides 0,
+        LocalSurfaceBorderColor provides elevation.borderColor(0),
+    ) {
+        Box(
+            modifier = modifier.background(elevation.backgroundColor(0)),
+            contentAlignment = contentAlignment,
+            content = content
+        )
     }
 }

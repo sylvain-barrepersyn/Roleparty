@@ -11,7 +11,8 @@ import androidx.compose.ui.unit.sp
 import app.roleparty.designsystem.resources.*
 import org.jetbrains.compose.resources.Font
 
-data class Typography(
+@ConsistentCopyVisibility
+data class Typography internal constructor(
     val bodyLarge: TextStyle,
     val body: TextStyle,
     val bodySmall: TextStyle,
@@ -36,7 +37,7 @@ internal fun rememberAppTypography(): Typography {
         Font(
             resource = Res.font.Libron_Italic,
             weight = FontWeight.Normal,
-            style = FontStyle.Italic
+            style = FontStyle.Italic,
         ),
         Font(
             resource = Res.font.Libron_BoldItalic,
@@ -48,57 +49,69 @@ internal fun rememberAppTypography(): Typography {
     val title = FontFamily(
         Font(
             resource = Res.font.Rubik_VariableFont_wght,
+            weight = FontWeight(400),
             variationSettings = FontVariation.Settings(FontVariation.weight(400))
         ),
         Font(
             resource = Res.font.Rubik_VariableFont_wght,
+            weight = FontWeight(700),
             variationSettings = FontVariation.Settings(FontVariation.weight(700))
         ),
         Font(
             resource = Res.font.Rubik_VariableFont_wght,
+            weight = FontWeight(800),
             variationSettings = FontVariation.Settings(FontVariation.weight(800))
         )
     )
 
-    return remember(body, title) {
+    val textPrimary = Theme.colors.textPrimary
+    val textSecondary = Theme.colors.textSecondary
+
+    return remember(body, title, textPrimary, textSecondary) {
         Typography(
             bodyLarge = TextStyle(
                 fontFamily = body,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
                 lineHeight = 20.sp,
-                letterSpacing = 0.1.sp
+                letterSpacing = 0.1.sp,
+                color = textSecondary
             ),
             body = TextStyle(
                 fontFamily = body,
                 fontSize = 14.sp,
                 lineHeight = 18.sp,
-                letterSpacing = 0.2.sp
+                letterSpacing = 0.2.sp,
+                color = textSecondary
             ),
             bodySmall = TextStyle(
                 fontFamily = body,
                 fontWeight = FontWeight.Normal,
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
-                letterSpacing = 0.1.sp
+                letterSpacing = 0.1.sp,
+                color = textSecondary
             ),
             title = TextStyle(
                 fontFamily = title,
                 fontWeight = FontWeight(700),
                 fontSize = 18.sp,
-                lineHeight = 20.sp
+                lineHeight = 20.sp,
+                color = textPrimary
             ),
             subtitle = TextStyle(
                 fontFamily = title,
                 fontWeight = FontWeight(400),
                 fontSize = 14.sp,
-                lineHeight = 18.sp
+                lineHeight = 18.sp,
+                color = textSecondary
             ),
             headline = TextStyle(
                 fontFamily = title,
                 fontWeight = FontWeight(800),
                 fontSize = 28.sp,
-                lineHeight = 33.2.sp
+                lineHeight = 33.2.sp,
+                color = textPrimary
             )
         )
     }

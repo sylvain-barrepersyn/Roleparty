@@ -4,27 +4,35 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import app.roleparty.core.designsystem.elevation.LocalElevation
+import app.roleparty.core.designsystem.elevation.darkElevation
+import app.roleparty.core.designsystem.elevation.lightElevation
 
-private val LocalColors = staticCompositionLocalOf { lightColors }
+private val LocalColors = staticCompositionLocalOf<Colors> { error("No colors provided, wrap the UI in RolepartyTheme") }
 
-private val LocalTypography = staticCompositionLocalOf<Typography> { error("No typography provided") }
+private val LocalTypography = staticCompositionLocalOf<Typography> { error("No typography provided, wrap the UI in RolepartyTheme") }
 
 @Composable
-internal fun provideTheme(
+fun RolepartyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colors = if (darkTheme) darkColors else lightColors
-    val typography = rememberAppTypography()
-
     CompositionLocalProvider(
-        LocalColors provides colors,
-        LocalTypography provides typography,
-        content = content
-    )
+        LocalColors provides if (darkTheme) darkColors else lightColors,
+        LocalElevation provides if (darkTheme) darkElevation else lightElevation,
+    ) {
+        CompositionLocalProvider(
+            LocalTypography provides rememberAppTypography(),
+            content = content
+        )
+    }
 }
 
 object Theme {
-    val colors @Composable get() = LocalColors.current
-    val typography @Composable get() = LocalTypography.current
+    val colors: Colors @Composable get() = LocalColors.current
+    val typography: Typography @Composable get() = LocalTypography.current
+    val shapes: Shapes = defaultShapes
+    val borderWidth: Dp = 2.dp
 }

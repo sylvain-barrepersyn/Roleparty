@@ -1,4 +1,4 @@
-package app.roleparty.core.designsystem.components.icon
+package app.roleparty.core.designsystem.icon
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -13,9 +13,9 @@ import org.jetbrains.compose.resources.vectorResource
 @Composable
 fun Icon(
     vector: IconVector,
-    contentDescription: String? = null,
     tint: Color,
     modifier: Modifier = Modifier,
+    contentDescription: String? = null,
     size: Dp = 24.dp,
 ) = Image(
     imageVector = vectorResource(vector.drawableResource),
