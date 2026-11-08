@@ -1,0 +1,4 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/contract-web.module-template.yaml

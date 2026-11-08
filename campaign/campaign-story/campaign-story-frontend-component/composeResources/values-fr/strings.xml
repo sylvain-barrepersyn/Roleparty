@@ -1,0 +1,15 @@
+<resources>
+    <string name="add_scene">Ajouter une scène</string>
+    <string name="new_scene">Nouvelle scène</string>
+    <string name="scene_name">Nom</string>
+    <string name="scene_description">Description</string>
+    <string name="no_scenes">Aucune scène pour l’instant.</string>
+    <string name="select_scene">Sélectionnez une scène pour la modifier.</string>
+    <string name="delete_scene">Supprimer</string>
+    <string name="delete_scene_confirmation">Supprimer la scène « %1$s » ? C’est définitif.</string>
+    <string name="cancel">Annuler</string>
+    <string name="scene_library">Bibliothèque</string>
+    <string name="link_entry">Lier</string>
+    <string name="unlink_entry">Délier</string>
+    <string name="no_linked_entries">Aucun élément de la bibliothèque n’est lié à cette scène.</string>
+</resources>

@@ -1,0 +1,18 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //communication/communication-commons: exported
+  - //core/core-commons
+  - $ktor.client.cio
+
+test-dependencies:
+  - $ktor.server.netty

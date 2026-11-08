@@ -1,0 +1,5 @@
+<resources>
+    <string name="unreachable">Roleparty’s servers can’t be reached. Check your connection and try again.</string>
+    <string name="unexpected">Something went wrong. Please try again.</string>
+    <string name="retry">Retry</string>
+</resources>

@@ -1,0 +1,13 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/compose-project.module-template.yaml
+
+settings:
+  compose:
+    resources:
+      packageName: app.roleparty.campaign.agenda.frontend.component.resources
+
+dependencies:
+  - //core/core-designsystem: exported
+  - //campaign/campaign-agenda/campaign-agenda-contract-web: exported

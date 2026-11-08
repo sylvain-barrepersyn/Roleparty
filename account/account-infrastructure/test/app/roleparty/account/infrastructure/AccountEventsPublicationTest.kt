@@ -53,7 +53,7 @@ class AccountEventsPublicationTest : FunSpec({
             val email = EmailAddress.from("gimli@roleparty.app")
 
             // When
-            val outcome = module.useCases.register(email)
+            val outcome = module.registerAccount(email)
 
             // Then
             val accountId = (outcome as Outcome.Success).value

@@ -1,0 +1,11 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-commons: exported
+  - //media/media-commons: exported
+
+test-dependencies:
+  - //media/media-test

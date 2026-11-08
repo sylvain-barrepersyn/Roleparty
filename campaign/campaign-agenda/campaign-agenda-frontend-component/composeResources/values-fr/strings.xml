@@ -1,0 +1,7 @@
+<resources>
+    <string name="schedule_session">Planifier une séance</string>
+    <string name="no_sessions">Aucune séance planifiée pour l’instant.</string>
+    <string name="select_session">Sélectionnez une séance pour la nommer.</string>
+    <string name="session_name">Nom</string>
+    <string name="session_name_placeholder">Séance du %1$s</string>
+</resources>

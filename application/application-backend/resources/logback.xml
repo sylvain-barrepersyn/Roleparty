@@ -9,4 +9,6 @@
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+    <!-- Netty has no native macOS DNS resolver here and falls back to the system's one, which is fine for local development -->
+    <logger name="io.netty.resolver.dns.DnsServerAddressStreamProviders" level="OFF"/>
 </configuration>

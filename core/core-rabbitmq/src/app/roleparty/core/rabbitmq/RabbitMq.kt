@@ -7,6 +7,7 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.DeliverCallback
 import com.rabbitmq.client.Delivery
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -30,6 +31,7 @@ class RabbitMq internal constructor(
     private val publication = Mutex()
     private var publicationChannel: Channel? = null
     private val declaredExchanges = mutableSetOf<String>()
+    private val deadLetterQueues = ConcurrentHashMap.newKeySet<String>()
 
     suspend fun publish(message: RabbitMqMessage): Unit = publication.withLock {
         withContext(Dispatchers.IO) {
@@ -38,6 +40,12 @@ class RabbitMq internal constructor(
 
             channel.basicPublish(message.exchange, ROUTING_KEY, message.properties(), message.body.toByteArray())
             channel.waitForConfirmsOrDie(CONFIRM_TIMEOUT_MILLISECONDS)
+        }
+    }
+
+    suspend fun deadLetterCounts(): Map<String, Long> = withContext(Dispatchers.IO) {
+        connection.createChannel().use { channel ->
+            deadLetterQueues.associateWith { channel.queueDeclarePassive(it).messageCount.toLong() }
         }
     }
 
@@ -86,6 +94,7 @@ class RabbitMq internal constructor(
 
     private fun Channel.declareQueueWithDeadLetter(queue: String) {
         val deadLetter = "$queue$DEAD_LETTER_SUFFIX"
+        deadLetterQueues += deadLetter
         declareEventExchange(deadLetter)
         queueDeclare(deadLetter, true, false, false, null)
         queueBind(deadLetter, deadLetter, ROUTING_KEY)

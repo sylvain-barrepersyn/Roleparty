@@ -1,0 +1,24 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  ktor: enabled
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //core/core-commons: exported
+  - $ktor.client.core: exported
+  - $ktor.client.contentNegotiation
+  - $ktor.client.resources: exported
+  - $ktor.serialization.kotlinx.json
+
+test-dependencies:
+  - //core/core-test
+  - $ktor.client.cio
+  - $ktor.server.netty
+  - $ktor.server.contentNegotiation

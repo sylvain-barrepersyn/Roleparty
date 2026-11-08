@@ -1,0 +1,11 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-commons: exported
+  - //campaign/campaign-library/campaign-library-commons: exported
+
+test-dependencies:
+  - //campaign/campaign-library/campaign-library-test

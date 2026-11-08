@@ -1,0 +1,15 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/compose-project.module-template.yaml
+
+settings:
+  compose:
+    resources:
+      packageName: app.roleparty.campaign.story.frontend.component.resources
+
+dependencies:
+  - //core/core-designsystem: exported
+  - //campaign/campaign-story/campaign-story-contract-web: exported
+  - //campaign/campaign-library/campaign-library-contract-web: exported
+  - //media/media-frontend-component: exported

@@ -24,4 +24,14 @@ class EmailAddressTest {
         // Then
         assertEquals(Outcome.Failure(InvalidEmailAddress("not-an-email")), outcome)
     }
+
+    @Test
+    fun `should treat addresses differing only by case or surrounding spaces as the same`() {
+        // When
+        val parsed = EmailAddress.parse("  Gimli@RoleParty.App ")
+
+        // Then
+        assertEquals(Outcome.Success(EmailAddress.from("gimli@roleparty.app")), parsed)
+        assertEquals(EmailAddress.from("gimli@roleparty.app"), EmailAddress.from("GIMLI@roleparty.app"))
+    }
 }

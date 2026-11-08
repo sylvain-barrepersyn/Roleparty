@@ -1,0 +1,15 @@
+<resources>
+    <string name="add_scene">Add a scene</string>
+    <string name="new_scene">New scene</string>
+    <string name="scene_name">Name</string>
+    <string name="scene_description">Description</string>
+    <string name="no_scenes">No scene yet.</string>
+    <string name="select_scene">Select a scene to edit it.</string>
+    <string name="delete_scene">Delete</string>
+    <string name="delete_scene_confirmation">Delete the scene “%1$s”? This can’t be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="scene_library">Library</string>
+    <string name="link_entry">Link</string>
+    <string name="unlink_entry">Unlink</string>
+    <string name="no_linked_entries">No library item is linked to this scene.</string>
+</resources>

@@ -1,0 +1,25 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //campaign/campaign-contract-web
+  - //campaign/campaign-database
+  - //campaign/campaign-domain: exported
+  - //campaign/campaign-event
+  - //core/core-outbox: exported
+  - //core/core-ktor-rest: exported
+  - //core/core-security: exported
+
+test-dependencies:
+  - //campaign/campaign-test
+  - $libs.testcontainers.postgresql
+  - $ktor.server.contentNegotiation
+  - $ktor.serialization.kotlinx.json

@@ -1,0 +1,8 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-database: exported
+  - //media/media-commons: exported

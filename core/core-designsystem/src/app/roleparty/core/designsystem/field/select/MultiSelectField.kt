@@ -28,7 +28,7 @@ fun <T> MultiSelectField(
     enabled: Boolean = true,
     required: Boolean = false,
     error: String? = null,
-    shape: Shape = Theme.shapes.rounded,
+    shape: Shape = Theme.shapes.roundedSmall,
 ) {
     val labeled = labeledOptions(options, optionLabel, sortByLabel)
 

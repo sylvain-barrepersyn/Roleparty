@@ -24,14 +24,14 @@ import app.roleparty.core.designsystem.theme.disabledIf
 
 @Composable
 fun Button(
-    text: String,
+    leadingIcon: IconVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: IconVector? = null,
+    text: String? = null,
     trailingIcon: IconVector? = null,
     enabled: Boolean = true,
     size: ButtonSize = ButtonSize.NORMAL,
-    shape: Shape = Theme.shapes.rounded,
+    shape: Shape = Theme.shapes.roundedSmall,
 ) {
     val tint = iconTint(enabled)
 
@@ -55,12 +55,12 @@ fun Button(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            leadingIcon?.let {
-                Icon(vector = it, tint = tint, size = size.leadingIconSize)
-                Spacer(Modifier.width(size.leadingSpacing))
-            }
+            Icon(vector = leadingIcon, tint = tint, size = size.leadingIconSize)
 
-            Text(text = text, color = Theme.colors.textSecondary.disabledIf(!enabled))
+            text?.let {
+                Spacer(Modifier.width(size.leadingSpacing))
+                Text(text = it, color = Theme.colors.textSecondary.disabledIf(!enabled))
+            }
 
             trailingIcon?.let {
                 Spacer(Modifier.width(size.trailingSpacing))
@@ -78,7 +78,7 @@ fun IconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     size: ButtonSize = ButtonSize.NORMAL,
-    shape: Shape = Theme.shapes.rounded,
+    shape: Shape = Theme.shapes.roundedSmall,
 ) {
     Surface(
         onClick = onClick,

@@ -7,3 +7,8 @@ settings:
   compose:
     resources:
       packageName: app.roleparty.designsystem.resources
+
+dependencies:
+  - $libs.kotlinx.datetime: exported
+  - $libs.richeditor.compose
+  - $libs.squircle.shape

@@ -1,0 +1,14 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+
+dependencies:
+  - //account/account-commons: exported
+  - //core/core-commons
+  - $ktor.server.auth: exported
+  - $ktor.server.auth.jwt
+  - $libs.java.jwt: exported
+
+test-dependencies:
+  - //core/core-test

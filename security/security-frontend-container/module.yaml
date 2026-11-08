@@ -1,0 +1,26 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/compose-project.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  ktor: enabled
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //core/core-commons: exported
+  - //core/core-frontend-container: exported
+  - //security/security-contract-web: exported
+  - //security/security-frontend-component: exported
+  - $ktor.client.cio
+  - $ktor.client.auth
+  - $libs.ksafe.core
+
+test-dependencies:
+  - //core/core-test
+  - $compose.desktop.currentOs
+  - $compose.uiTest
+  - $ktor.server.netty

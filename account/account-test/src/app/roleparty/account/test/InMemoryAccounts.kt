@@ -8,7 +8,7 @@ import app.roleparty.account.domain.port.secondary.Accounts
 import app.roleparty.communication.commons.EmailAddress
 import app.roleparty.core.commons.Outcome
 
-class InMemoryAccounts : Accounts {
+internal class InMemoryAccounts : Accounts {
 
     private val accounts = mutableMapOf<AccountId, Account>()
 

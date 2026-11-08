@@ -1,0 +1,6 @@
+<resources>
+    <string name="choose_image">Choisir une image</string>
+    <string name="uploading_image">Envoi en cours…</string>
+    <string name="unreachable">Les serveurs de Roleparty sont injoignables. Vérifiez votre connexion et réessayez.</string>
+    <string name="unexpected">Une erreur est survenue. Veuillez réessayer.</string>
+</resources>

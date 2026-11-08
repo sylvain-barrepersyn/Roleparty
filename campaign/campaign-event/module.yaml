@@ -1,0 +1,9 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-rabbitmq: exported
+  - //campaign/campaign-commons: exported

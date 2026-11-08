@@ -1,0 +1,25 @@
+<resources>
+    <string name="welcome">Roleparty</string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="password_confirmation">Confirmation du mot de passe</string>
+    <string name="new_password">Nouveau mot de passe</string>
+    <string name="code">Code</string>
+    <string name="sign_in">Se connecter</string>
+    <string name="sign_up">Créer un compte</string>
+    <string name="sign_out">Se déconnecter</string>
+    <string name="confirm">Confirmer</string>
+    <string name="back">Retour</string>
+    <string name="forgotten_password">Mot de passe oublié ?</string>
+    <string name="send_code">M’envoyer un code</string>
+    <string name="verify_instructions">Si cette adresse est disponible, nous vous avons envoyé un code. Saisissez-le pour confirmer votre adresse.</string>
+    <string name="reset_instructions">Si cette adresse possède un compte, nous vous avons envoyé un code. Saisissez-le pour choisir un nouveau mot de passe.</string>
+    <string name="email_verified">Votre adresse est confirmée. Vous pouvez vous connecter.</string>
+    <string name="password_reset">Votre mot de passe a changé. Vous pouvez vous connecter.</string>
+    <string name="invalid_email_address">Saisissez une adresse e-mail valide.</string>
+    <string name="invalid_password">Le mot de passe doit contenir entre 8 et 128 caractères.</string>
+    <string name="passwords_differ">Les deux mots de passe sont différents.</string>
+    <string name="missing_field">Ce champ est obligatoire.</string>
+    <string name="unreachable">Les serveurs de Roleparty sont injoignables. Vérifiez votre connexion et réessayez.</string>
+    <string name="unexpected_failure">Une erreur est survenue. Veuillez réessayer dans quelques instants.</string>
+</resources>

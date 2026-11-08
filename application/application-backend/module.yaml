@@ -2,6 +2,7 @@ product: jvm/app
 
 apply:
   - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
 
 settings:
   ktor: enabled
@@ -9,7 +10,29 @@ settings:
     mainClass: app.roleparty.application.backend.MainKt
 
 dependencies:
+  - //account/account-infrastructure
+  - //campaign/campaign-infrastructure
+  - //campaign/campaign-agenda/campaign-agenda-infrastructure
+  - //campaign/campaign-creature/campaign-creature-infrastructure
+  - //campaign/campaign-library/campaign-library-infrastructure
+  - //campaign/campaign-story/campaign-story-infrastructure
+  - //communication/communication-commons
+  - //communication/communication-hostinger
+  - //media/media-infrastructure
+  - //core/core-commons
+  - //core/core-outbox
+  - //security/security-infrastructure
   - $ktor.server.netty
   - $ktor.server.config.yaml
   - $ktor.server.callLogging
+  - $ktor.server.contentNegotiation
+  - $ktor.server.forwardedHeader
+  - $ktor.serialization.kotlinx.json
   - $libs.logback.classic
+
+test-dependencies:
+  - //security/security-contract-web
+  - //security/security-frontend-container
+  - $ktor.client.cio
+  - $libs.testcontainers.postgresql
+  - $libs.testcontainers.rabbitmq

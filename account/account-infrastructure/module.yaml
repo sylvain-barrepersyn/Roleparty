@@ -12,10 +12,10 @@ settings:
 
 dependencies:
   - //account/account-domain: exported
-  - //account/account-contract-rpc
+  - //account/account-contract-internal
   - //account/account-database
   - //account/account-event
-  - //core/core-krpc
+  - //core/core-ktor-rpc
   - //core/core-outbox: exported
 
 test-dependencies:

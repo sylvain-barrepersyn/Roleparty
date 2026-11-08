@@ -35,7 +35,6 @@ fun ScrollableOptionList(
             .fillMaxWidth()
             .heightIn(max = maxHeight)
             .padding(start = Theme.borderWidth, end = Theme.borderWidth, bottom = Theme.borderWidth)
-            .clip(Theme.shapes.rounded)
     ) {
         Column(
             modifier = Modifier.verticalScroll(scrollState),

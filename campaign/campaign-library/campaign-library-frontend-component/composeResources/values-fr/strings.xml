@@ -1,0 +1,10 @@
+<resources>
+    <string name="add_entry">Ajouter à la bibliothèque</string>
+    <string name="entry_title">Titre</string>
+    <string name="entry_description">Description</string>
+    <string name="entry_image">Image</string>
+    <string name="no_entries">La bibliothèque est vide.</string>
+    <string name="select_entry">Sélectionnez un élément pour le modifier.</string>
+    <string name="cancel">Annuler</string>
+    <string name="creating">Création…</string>
+</resources>

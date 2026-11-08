@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldNotBe
 
 class AccountRpcControllerTest : AccountBehaviorTest() {
 
-    private val controller = AccountRpcController(fixtures.useCases)
+    private val controller = AccountRpcController(fixtures.registerAccount, fixtures.findAccount)
     private val email = EmailAddress.from("gimli@roleparty.app")
 
     init {

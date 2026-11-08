@@ -1,0 +1,12 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/ktor-server.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+dependencies:
+  - //core/core-commons: exported
+  - $ktor.server.resources: exported
+
+test-dependencies:
+  - //core/core-test

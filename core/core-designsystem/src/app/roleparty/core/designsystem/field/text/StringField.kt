@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import app.roleparty.core.designsystem.field.Field
 import app.roleparty.core.designsystem.icon.IconVector
@@ -31,7 +32,8 @@ fun StringField(
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    shape: Shape = Theme.shapes.rounded,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    shape: Shape = Theme.shapes.roundedSmall,
 ) {
     val placeholderColor = Theme.colors.textSecondary.disabledIf(!enabled)
 
@@ -52,6 +54,7 @@ fun StringField(
             singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
+            visualTransformation = visualTransformation,
             textStyle = Theme.typography.body.copy(color = Theme.colors.textPrimary.disabledIf(!enabled)),
             cursorBrush = SolidColor(Theme.colors.textPrimary),
             decorationBox = { innerTextField ->

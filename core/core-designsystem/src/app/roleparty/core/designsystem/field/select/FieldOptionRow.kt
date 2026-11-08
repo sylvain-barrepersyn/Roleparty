@@ -52,8 +52,7 @@ fun FieldOptionRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 2.dp, vertical = 2.dp)
-            .clip(Theme.shapes.rounded)
+            .clip(Theme.shapes.rectangle)
             .background(background)
             .selectable(
                 selected = selected,

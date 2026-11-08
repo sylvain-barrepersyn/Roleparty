@@ -1,0 +1,20 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/common-configuration.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //core/core-database: exported
+  - //campaign/campaign-commons: exported
+  - //campaign/campaign-agenda/campaign-agenda-commons: exported
+  - //campaign/campaign-creature/campaign-creature-commons: exported
+  - //campaign/campaign-library/campaign-library-commons: exported
+  - //campaign/campaign-story/campaign-story-commons: exported
+  - $libs.exposed.kotlin.datetime: exported
+  - $libs.exposed.json: exported

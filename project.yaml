@@ -1,5 +1,12 @@
 modules:
   - account/*
   - application/*
+  - campaign/*
+  - campaign/campaign-agenda/*
+  - campaign/campaign-creature/*
+  - campaign/campaign-library/*
+  - campaign/campaign-story/*
   - communication/*
   - core/*
+  - media/*
+  - security/*

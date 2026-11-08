@@ -16,12 +16,14 @@ value class EmailAddress private constructor(private val value: String) {
     override fun toString() = value
 
     companion object {
-        fun from(value: String) = EmailAddress(value)
+        fun from(value: String) = EmailAddress(normalize(value))
 
         fun parse(value: String): Outcome<EmailAddress, InvalidEmailAddress> =
-            if (isValidEmailAddress(value)) Outcome.Success(EmailAddress(value))
+            if (isValidEmailAddress(normalize(value))) Outcome.Success(from(value))
             else Outcome.Failure(InvalidEmailAddress(value))
 
         fun isValidEmailAddress(str: String) = EmailValidator.getInstance().isValid(str)
+
+        private fun normalize(value: String) = value.trim().lowercase()
     }
 }

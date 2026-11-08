@@ -42,7 +42,7 @@ fun Field(
     enabled: Boolean = true,
     required: Boolean = false,
     error: String? = null,
-    shape: Shape = Theme.shapes.rounded,
+    shape: Shape = Theme.shapes.roundedSmall,
     headerTrailing: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {

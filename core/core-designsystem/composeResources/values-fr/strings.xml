@@ -1,3 +1,8 @@
 <resources>
     <string name="required">obligatoire</string>
+    <string name="loading">Chargement</string>
+    <string name="previous_month">Mois précédent</string>
+    <string name="next_month">Mois suivant</string>
+    <string name="bold">Gras</string>
+    <string name="italic">Italique</string>
 </resources>

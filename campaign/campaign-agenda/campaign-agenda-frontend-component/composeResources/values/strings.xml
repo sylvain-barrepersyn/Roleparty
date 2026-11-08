@@ -1,0 +1,7 @@
+<resources>
+    <string name="schedule_session">Schedule a session</string>
+    <string name="no_sessions">No session scheduled yet.</string>
+    <string name="select_session">Select a session to name it.</string>
+    <string name="session_name">Name</string>
+    <string name="session_name_placeholder">Session of %1$s</string>
+</resources>

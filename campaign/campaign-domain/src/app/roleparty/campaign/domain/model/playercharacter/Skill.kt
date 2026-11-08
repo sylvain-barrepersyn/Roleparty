@@ -1,0 +1,22 @@
+package app.roleparty.campaign.domain.model.playercharacter
+
+enum class Skill {
+    ACROBATICS,
+    ANIMAL_HANDLING,
+    ARCANA,
+    ATHLETICS,
+    DECEPTION,
+    HISTORY,
+    INSIGHT,
+    INTIMIDATION,
+    INVESTIGATION,
+    MEDICINE,
+    NATURE,
+    PERCEPTION,
+    PERFORMANCE,
+    PERSUASION,
+    RELIGION,
+    SLEIGHT_OF_HAND,
+    STEALTH,
+    SURVIVAL
+}

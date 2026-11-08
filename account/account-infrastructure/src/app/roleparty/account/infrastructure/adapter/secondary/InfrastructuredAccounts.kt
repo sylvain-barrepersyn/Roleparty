@@ -24,7 +24,7 @@ import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.r2dbc.update
 
-class InfrastructuredAccounts internal constructor(
+internal class InfrastructuredAccounts(
     private val database: R2dbcDatabase,
     private val clock: Clock,
 ) : Accounts {

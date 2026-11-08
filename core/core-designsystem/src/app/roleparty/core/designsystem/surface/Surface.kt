@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -87,7 +88,9 @@ internal fun SurfaceContainer(
 
     val interactionModifier = when (interaction) {
         SurfaceInteraction.None -> Modifier
-        SurfaceInteraction.Hoverable -> Modifier.hoverable(interactionSource = interactionSource, enabled = enabled)
+        SurfaceInteraction.Hoverable -> Modifier
+            .hoverable(interactionSource = interactionSource, enabled = enabled)
+            .border(Theme.borderWidth, resolvedBorderColor, shape)
         is SurfaceInteraction.Clickable -> Modifier
             .clickable(
                 interactionSource = interactionSource,
@@ -96,6 +99,7 @@ internal fun SurfaceContainer(
                 role = interaction.role,
                 onClick = interaction.onClick
             )
+            .border(Theme.borderWidth, resolvedBorderColor, shape)
             .then(if (enabled) Modifier.pointerHoverIcon(PointerIcon.Hand) else Modifier)
     }
 
@@ -106,7 +110,7 @@ internal fun SurfaceContainer(
         Box(
             modifier = modifier
                 .background(backgroundColor, shape)
-                .border(Theme.borderWidth, resolvedBorderColor, shape)
+                .clip(shape)
                 .then(interactionModifier),
             contentAlignment = contentAlignment,
             content = content

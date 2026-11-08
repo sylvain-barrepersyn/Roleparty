@@ -6,6 +6,15 @@ apply:
 settings:
   jvm:
     mainClass: app.roleparty.application.frontend.MainKt
+  compose:
+    resources:
+      packageName: app.roleparty.application.frontend.resources
 
 dependencies:
   - //core/core-designsystem
+  - //campaign/campaign-frontend-container
+  - //media/media-frontend-container
+  - //security/security-frontend-container
+  - $libs.navigationevent.compose
+  - $compose.desktop.currentOs
+  - $libs.kotlinx.coroutines.swing
