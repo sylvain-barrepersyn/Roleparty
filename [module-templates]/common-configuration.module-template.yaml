@@ -1,9 +1,0 @@
-settings:
-  kotlin:
-    optIns:
-      - kotlin.uuid.ExperimentalUuidApi
-    freeCompilerArgs:
-      - -Xname-based-destructuring=complete
-  jvm:
-    jdk:
-      version: 25

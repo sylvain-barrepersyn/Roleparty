@@ -1,8 +1,0 @@
-product: jvm/lib
-
-apply:
-  - //[module-templates]/common-configuration.module-template.yaml
-
-dependencies:
-  - //campaign/campaign-story/campaign-story-domain: exported
-  - //core/core-test: exported

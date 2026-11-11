@@ -1,7 +1,0 @@
-product: jvm/lib
-
-apply:
-  - //[module-templates]/contract-web.module-template.yaml
-
-dependencies:
-  - //campaign/campaign-agenda/campaign-agenda-commons: exported

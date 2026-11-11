@@ -1,9 +1,0 @@
-apply:
-  - ./common-configuration.module-template.yaml
-  - ./serialization-configuration.module-template.yaml
-
-settings:
-  ktor: enabled
-
-dependencies:
-  - $ktor.resources: exported

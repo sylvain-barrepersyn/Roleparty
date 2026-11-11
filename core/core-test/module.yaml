@@ -1,9 +1,0 @@
-product: jvm/lib
-
-apply:
-  - //[module-templates]/common-configuration.module-template.yaml
-
-dependencies:
-  - //core/core-commons: exported
-  - $libs.kotest.assertions.core: exported
-  - $libs.kotest.runner.junit5: exported

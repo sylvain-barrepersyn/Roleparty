@@ -1,9 +1,0 @@
-product: jvm/lib
-
-apply:
-  - //[module-templates]/contract-web.module-template.yaml
-
-dependencies:
-  - //campaign/campaign-story/campaign-story-commons: exported
-  - //core/core-document: exported
-  - //campaign/campaign-library/campaign-library-commons: exported

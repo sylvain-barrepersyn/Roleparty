@@ -1,9 +1,0 @@
-product: jvm/lib
-
-apply:
-  - //[module-templates]/common-configuration.module-template.yaml
-
-dependencies:
-  - //core/core-database: exported
-  - //communication/communication-commons: exported
-  - //account/account-commons: exported

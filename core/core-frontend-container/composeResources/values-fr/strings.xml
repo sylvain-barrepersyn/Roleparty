@@ -1,5 +1,0 @@
-<resources>
-    <string name="unreachable">Les serveurs de Roleparty sont injoignables. Vérifiez votre connexion et réessayez.</string>
-    <string name="unexpected">Une erreur est survenue. Veuillez réessayer.</string>
-    <string name="retry">Réessayer</string>
-</resources>
