@@ -34,7 +34,11 @@ import app.roleparty.core.designsystem.theme.Theme
 import app.roleparty.core.designsystem.theme.disabledIf
 import app.roleparty.designsystem.resources.Res
 import app.roleparty.designsystem.resources.bold
+import app.roleparty.designsystem.resources.bulleted_list
+import app.roleparty.designsystem.resources.heading_1
+import app.roleparty.designsystem.resources.heading_2
 import app.roleparty.designsystem.resources.italic
+import com.mohamedrejeb.richeditor.model.HeadingStyle
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.BasicRichTextEditor
@@ -53,6 +57,7 @@ fun RichTextField(
     required: Boolean = false,
     error: String? = null,
     minHeight: Dp = 160.dp,
+    structured: Boolean = false,
 ) {
     val state = rememberRichTextState()
     val currentOnChange by rememberUpdatedState(onMarkdownChange)
@@ -74,7 +79,7 @@ fun RichTextField(
         enabled = enabled,
         required = required,
         error = error,
-        headerTrailing = { FormatButtons(state, enabled) },
+        headerTrailing = { FormatButtons(state, enabled, structured) },
     ) {
         BasicRichTextEditor(
             state = state,
@@ -98,8 +103,20 @@ fun RichTextField(
 }
 
 @Composable
-private fun FormatButtons(state: RichTextState, enabled: Boolean) {
+private fun FormatButtons(state: RichTextState, enabled: Boolean, structured: Boolean) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (structured) {
+            HeadingButton(state, HeadingStyle.H1, IconVector.TEXT_HEADING_1, stringResource(Res.string.heading_1), enabled)
+            HeadingButton(state, HeadingStyle.H2, IconVector.TEXT_HEADING_2, stringResource(Res.string.heading_2), enabled)
+            IconButton(
+                icon = IconVector.TEXT_LIST,
+                contentDescription = stringResource(Res.string.bulleted_list),
+                onClick = { state.toggleUnorderedList() },
+                enabled = enabled,
+                size = ButtonSize.TINY,
+                modifier = Modifier.focusProperties { canFocus = false },
+            )
+        }
         IconButton(
             icon = IconVector.TEXT_BOLD,
             contentDescription = stringResource(Res.string.bold),
@@ -117,4 +134,16 @@ private fun FormatButtons(state: RichTextState, enabled: Boolean) {
             modifier = Modifier.focusProperties { canFocus = false },
         )
     }
+}
+
+@Composable
+private fun HeadingButton(state: RichTextState, heading: HeadingStyle, icon: IconVector, label: String, enabled: Boolean) {
+    IconButton(
+        icon = icon,
+        contentDescription = label,
+        onClick = { state.setHeadingStyle(if (state.currentHeadingStyle == heading) HeadingStyle.Normal else heading) },
+        enabled = enabled,
+        size = ButtonSize.TINY,
+        modifier = Modifier.focusProperties { canFocus = false },
+    )
 }

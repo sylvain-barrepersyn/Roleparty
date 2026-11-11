@@ -6,6 +6,11 @@ import app.roleparty.campaign.frontend.container.mastered.MasteredCampaignAction
 import app.roleparty.campaign.frontend.container.mastered.MasteredCampaignEvent
 import app.roleparty.campaign.frontend.container.mastered.MasteredCampaignState
 import app.roleparty.campaign.frontend.container.mastered.MasteredCampaignViewModel
+import app.roleparty.campaign.frontend.component.played.PlayedCampaignSection
+import app.roleparty.campaign.frontend.container.played.PlayedCampaignAction
+import app.roleparty.campaign.frontend.container.played.PlayedCampaignEvent
+import app.roleparty.campaign.frontend.container.played.PlayedCampaignState
+import app.roleparty.campaign.frontend.container.played.PlayedCampaignViewModel
 import app.roleparty.campaign.frontend.container.settings.CampaignSettingsAction
 import app.roleparty.campaign.frontend.container.settings.CampaignSettingsState
 import app.roleparty.campaign.frontend.container.settings.CampaignSettingsViewModel
@@ -52,6 +57,29 @@ class MasteredCampaignViewModelsTest : FunSpec({
         viewModel.handle(MasteredCampaignAction.Retry)
 
         viewModel.state.value shouldBe MasteredCampaignState.Loaded(api.campaign)
+    }
+
+    test("a played campaign should be shown as the chosen character on the agenda, and report the exit") {
+        val api = FakeCreatureApi()
+        val viewModel = PlayedCampaignViewModel(api, api.playerCharacter.id)
+        val events = viewModel.recordedEvents()
+
+        viewModel.handle(PlayedCampaignAction.Exit)
+
+        viewModel.state.value shouldBe PlayedCampaignState.Loaded(api.playerCharacter, PlayedCampaignSection.AGENDA)
+        api.calls shouldContainExactly listOf("player character ${api.playerCharacter.id}")
+        events shouldContainExactly listOf(PlayedCampaignEvent.Exited)
+    }
+
+    test("a played campaign whose character can't be loaded should be retried") {
+        val api = FakeCreatureApi().apply { failure = BackendFailure.Unreachable }
+        val viewModel = PlayedCampaignViewModel(api, api.playerCharacter.id)
+        viewModel.state.value shouldBe PlayedCampaignState.Failed(BackendFailure.Unreachable)
+
+        api.failure = null
+        viewModel.handle(PlayedCampaignAction.Retry)
+
+        viewModel.state.value shouldBe PlayedCampaignState.Loaded(api.playerCharacter)
     }
 
     test("a generated invitation code should be added to the existing ones") {

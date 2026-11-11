@@ -1,6 +1,8 @@
 package app.roleparty.campaign.agenda.test
 
+import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.agenda.commons.GameSessionId
+import app.roleparty.campaign.agenda.domain.model.Presence
 import app.roleparty.campaign.agenda.domain.model.GameSession
 import app.roleparty.campaign.agenda.domain.port.secondary.GameSessions
 import app.roleparty.campaign.commons.CampaignId
@@ -36,6 +38,20 @@ abstract class GameSessionsContractTest(createSubject: () -> GameSessionsContrac
 
                 Then("it should hold the new name") {
                     gameSessions.findById(later.id)?.name shouldBe "Finale"
+                }
+            }
+
+            When("presences and the digital gaming table are saved, then a presence changes") {
+                val gameMaster = AccountId.generate()
+                val player = AccountId.generate()
+                val planned = sooner.copy(digitalGamingTable = true, presences = mapOf(gameMaster to Presence.IN_PERSON_WITH_COMPUTER, player to Presence.REMOTE))
+                gameSessions.save(planned)
+                val changed = planned.copy(presences = mapOf(gameMaster to Presence.IN_PERSON_WITH_COMPUTER, player to Presence.ABSENT))
+                gameSessions.save(changed)
+
+                Then("it should hold the latest presences and the table") {
+                    gameSessions.findById(sooner.id) shouldBe changed
+                    gameSessions.ofCampaign(campaignId).first() shouldBe changed
                 }
             }
         }

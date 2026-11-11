@@ -3,8 +3,10 @@ package app.roleparty.campaign.database
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.agenda.commons.GameSessionId
 import app.roleparty.campaign.commons.CampaignId
-import app.roleparty.campaign.commons.PlayerCharacterId
+import app.roleparty.campaign.creature.commons.PlayerCharacterId
+import app.roleparty.campaign.creature.commons.CharacterSheetId
 import app.roleparty.campaign.creature.commons.MonsterSheetId
+import app.roleparty.campaign.library.commons.JournalEntryId
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.story.commons.SceneId
 import app.roleparty.media.commons.ImageId
@@ -18,3 +20,5 @@ internal fun Table.sceneId(name: String) = uuid(name).transform(wrap = { SceneId
 internal fun Table.gameSessionId(name: String) = uuid(name).transform(wrap = { GameSessionId.from(it) }, unwrap = { it.toUuid() })
 internal fun Table.monsterSheetId(name: String) = uuid(name).transform(wrap = { MonsterSheetId.from(it) }, unwrap = { it.toUuid() })
 internal fun Table.libraryEntryId(name: String) = uuid(name).transform(wrap = { LibraryEntryId.from(it) }, unwrap = { it.toUuid() })
+internal fun Table.characterSheetId(name: String) = uuid(name).transform(wrap = { CharacterSheetId.from(it) }, unwrap = { it.toUuid() })
+internal fun Table.journalEntryId(name: String) = uuid(name).transform(wrap = { JournalEntryId.from(it) }, unwrap = { it.toUuid() })

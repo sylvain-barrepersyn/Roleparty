@@ -16,6 +16,7 @@ import org.koin.dsl.module
 import org.koin.dsl.onClose
 
 private const val BACKEND_URL = "ROLEPARTY_BACKEND_URL"
+private const val PACKAGED_BACKEND_URL = "roleparty.backend.url"
 private const val DEFAULT_BACKEND_URL = "http://localhost:8080"
 
 private val SECURITY_CLIENT = named("security")
@@ -34,4 +35,4 @@ val securityFrontendModule = module {
     viewModelOf(::AuthenticationViewModel)
 }
 
-private fun backendUrl() = System.getenv(BACKEND_URL) ?: DEFAULT_BACKEND_URL
+private fun backendUrl() = System.getenv(BACKEND_URL) ?: System.getProperty(PACKAGED_BACKEND_URL) ?: DEFAULT_BACKEND_URL

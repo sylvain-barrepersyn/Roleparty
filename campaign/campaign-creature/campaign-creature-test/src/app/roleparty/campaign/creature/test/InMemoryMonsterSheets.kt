@@ -18,5 +18,5 @@ internal class InMemoryMonsterSheets : MonsterSheets {
 
     override suspend fun overviewsOf(campaignId: CampaignId) = monsterSheets.values
         .filter { it.campaignId == campaignId }
-        .map { MonsterSheetOverview(it.id, it.name, it.image, it.type, it.size, it.challengeRating) }
+        .map { MonsterSheetOverview(it.id, it.name, it.image, it.stats.type, it.stats.size, it.stats.challengeRating) }
 }

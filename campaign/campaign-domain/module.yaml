@@ -6,6 +6,7 @@ apply:
 dependencies:
   - //core/core-commons: exported
   - //campaign/campaign-commons: exported
+  - $libs.kotlinx.datetime: exported
 
 test-dependencies:
   - //campaign/campaign-test

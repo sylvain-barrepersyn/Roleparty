@@ -4,4 +4,18 @@
     <string name="select_session">Select a session to name it.</string>
     <string name="session_name">Name</string>
     <string name="session_name_placeholder">Session of %1$s</string>
+    <string name="presences">Presence</string>
+    <string name="session_over">This session is over: presences can no longer change.</string>
+    <string name="game_master">Game master</string>
+    <string name="player_without_character">Player without character</string>
+    <string name="you">(you)</string>
+    <string name="presence_absent">Absent</string>
+    <string name="presence_in_person_with_computer">In person, with a computer</string>
+    <string name="presence_in_person_without_computer">In person, without a computer</string>
+    <string name="presence_remote">Remote</string>
+    <string name="digital_gaming_table">Digital gaming table</string>
+    <string name="digital_gaming_table_hint">The game master can project or display the content on a screen.</string>
+    <string name="agenda_settings">Agenda</string>
+    <string name="agenda_settings_hint">Applied to each session when it is scheduled. Changing them later doesn’t change the sessions already scheduled.</string>
+    <string name="default_presence">Default presence</string>
 </resources>

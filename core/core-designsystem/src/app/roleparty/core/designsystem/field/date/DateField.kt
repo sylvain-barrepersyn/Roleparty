@@ -108,7 +108,7 @@ fun DatePickerDialog(
 
 @Composable
 private fun DayCell(day: Int, enabled: Boolean, onClick: () -> Unit) {
-    Surface(onClick = onClick, enabled = enabled, role = Role.Button, modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Surface(onClick = onClick, enabled = enabled, role = Role.Button, modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center, shape = Theme.shapes.roundedSmall) {
         Text(text = day.toString(), color = Theme.colors.textPrimary.disabledIf(!enabled))
     }
 }

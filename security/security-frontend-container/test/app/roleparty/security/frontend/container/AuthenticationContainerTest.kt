@@ -14,6 +14,7 @@ import androidx.compose.ui.test.requestFocus
 import androidx.compose.ui.test.runComposeUiTest
 import app.roleparty.core.designsystem.surface.BaseSurface
 import app.roleparty.core.designsystem.text.Text
+import app.roleparty.core.frontend.container.Navigation
 import app.roleparty.core.designsystem.theme.RolepartyTheme
 import app.roleparty.security.frontend.component.authentication.SignOutButton
 import app.roleparty.security.frontend.container.authentication.AuthenticationContainer
@@ -28,6 +29,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.kotest.matchers.collections.shouldHaveSize
 import java.util.Locale
 import org.koin.compose.KoinIsolatedContext
 import org.koin.core.module.dsl.viewModelOf
@@ -60,6 +64,33 @@ class AuthenticationContainerTest : FunSpec() {
                         AuthenticationContainer { signOut ->
                             Text("Signed in content")
                             SignOutButton(onClick = signOut)
+                        }.Render()
+                    }
+                }
+            }
+        }
+        waitForIdle()
+    }
+
+    private class ScreenViewModel : ViewModel() {
+        var cleared = false
+
+        override fun onCleared() {
+            cleared = true
+        }
+    }
+
+    private fun ComposeUiTest.gateWithScreen(created: MutableList<ScreenViewModel>) {
+        setContent {
+            KoinIsolatedContext(koinApplication { modules(securityModule) }) {
+                RolepartyTheme {
+                    BaseSurface {
+                        AuthenticationContainer { signOut ->
+                            Navigation(backStack = listOf("Campaigns"), onBack = {}) {
+                                val screen = viewModel { ScreenViewModel().also { created += it } }
+                                Text("Signed in content ${created.indexOf(screen)}")
+                                SignOutButton(onClick = signOut)
+                            }
                         }.Render()
                     }
                 }
@@ -312,6 +343,29 @@ class AuthenticationContainerTest : FunSpec() {
                 shows("Sign in")
                 store.session.shouldBeNull()
                 api.calls.last() shouldBe "signOut:refresh"
+            }
+        }
+
+        test("should start the screens afresh after signing out and in again, forgetting those of the previous session") {
+            runComposeUiTest {
+                // Given
+                val created = mutableListOf<ScreenViewModel>()
+                store.session = StoredSession("old-access", "old-refresh")
+                gateWithScreen(created)
+                shows("Signed in content 0")
+
+                // When
+                click("Sign out")
+                shows("Sign in")
+                type(0, email)
+                type(1, password)
+                click("Sign in")
+
+                // Then
+                shows("Signed in content 1")
+                created shouldHaveSize 2
+                created.first().cleared shouldBe true
+                created.last().cleared shouldBe false
             }
         }
 

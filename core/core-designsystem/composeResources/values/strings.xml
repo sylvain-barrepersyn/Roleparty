@@ -5,4 +5,9 @@
     <string name="next_month">Next month</string>
     <string name="bold">Bold</string>
     <string name="italic">Italic</string>
+    <string name="heading_1">Title</string>
+    <string name="heading_2">Subtitle</string>
+    <string name="bulleted_list">Bulleted list</string>
+    <string name="paragraph_text">Text</string>
+    <string name="paragraph_handle">Drag to move, click to change the type</string>
 </resources>

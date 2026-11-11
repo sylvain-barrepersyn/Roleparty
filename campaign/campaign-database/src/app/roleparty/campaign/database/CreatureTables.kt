@@ -65,3 +65,61 @@ object MonsterSheetTable : Table("$SCHEMA_CAMPAIGN.monster_sheet") {
 
     override val primaryKey = PrimaryKey(id)
 }
+
+object CharacterSheetTable : Table("$SCHEMA_CAMPAIGN.character_sheet") {
+    val id = characterSheetId("id")
+    val campaignId = campaignId("campaign_id")
+    val name = text("name")
+    val imageId = imageId("image_id").nullable()
+    val notes = text("notes")
+    val monsterSheetId = monsterSheetId("monster_sheet_id").nullable()
+    val size = text("size").nullable()
+    val type = text("type").nullable()
+    val challengeRating = text("challenge_rating").nullable()
+    val content = jsonb<MonsterSheetContent>("content", json).nullable()
+
+    override val primaryKey = PrimaryKey(id)
+}
+
+object PlayerCharacterTable : Table("$SCHEMA_CAMPAIGN.player_character") {
+    val id = playerCharacterId("id")
+    val campaignId = campaignId("campaign_id")
+    val player = accountId("player")
+    val name = text("name")
+    val imageId = imageId("image_id")
+    val content = jsonb<PlayerCharacterContent>("content", playerCharacterJson)
+
+    override val primaryKey = PrimaryKey(id)
+}
+
+private val playerCharacterJson = Json { ignoreUnknownKeys = true }
+
+@Serializable
+data class PlayerCharacterContent(
+    val classes: List<ClassContent>,
+    val classFeatures: String,
+    val savingThrows: Set<String>,
+    val armorTrainings: Set<String>,
+    val background: BackgroundContent,
+    val skillProficiencies: Set<String>,
+    val species: SpeciesContent,
+    val languages: List<String>,
+    val equipment: String,
+    val coins: Int,
+    val abilityScores: Map<String, Int>,
+    val alignment: String,
+    val appearance: String,
+    val personality: String,
+    val backstory: String,
+    val otherDetails: String,
+) {
+
+    @Serializable
+    data class ClassContent(val name: String, val level: Int, val hitDie: String)
+
+    @Serializable
+    data class BackgroundContent(val name: String, val originFeat: String, val toolProficiency: String)
+
+    @Serializable
+    data class SpeciesContent(val name: String, val size: String, val speed: Int, val traits: String)
+}

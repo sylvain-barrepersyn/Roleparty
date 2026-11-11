@@ -1,5 +1,6 @@
 package app.roleparty.campaign.story.frontend.container.data
 
+import app.roleparty.core.document.Document
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.library.contract.web.LibraryEntryResponseBody
@@ -24,9 +25,9 @@ interface StoryApi {
 
     suspend fun scenes(campaignId: CampaignId): Outcome<List<SceneResponseBody>, BackendFailure>
 
-    suspend fun createScene(campaignId: CampaignId, name: String, description: String): Outcome<SceneId, BackendFailure>
+    suspend fun createScene(campaignId: CampaignId, name: String, description: Document): Outcome<SceneId, BackendFailure>
 
-    suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: String): Outcome<Unit, BackendFailure>
+    suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: Document): Outcome<Unit, BackendFailure>
 
     suspend fun deleteScene(campaignId: CampaignId, sceneId: SceneId): Outcome<Unit, BackendFailure>
 
@@ -42,12 +43,12 @@ class HttpStoryApi(private val client: HttpClient) : StoryApi {
     override suspend fun scenes(campaignId: CampaignId) =
         backendCall<List<SceneResponseBody>> { client.get(ScenesResource(campaignId)) }
 
-    override suspend fun createScene(campaignId: CampaignId, name: String, description: String) =
+    override suspend fun createScene(campaignId: CampaignId, name: String, description: Document) =
         backendCall<SceneCreatedResponseBody> {
             client.post(ScenesResource(campaignId)) { jsonBody(SceneRequestBody(name, description)) }
         }.map { it.id }
 
-    override suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: String) =
+    override suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: Document) =
         backendCall<Unit> { client.put(sceneOf(campaignId, sceneId)) { jsonBody(SceneRequestBody(name, description)) } }
 
     override suspend fun deleteScene(campaignId: CampaignId, sceneId: SceneId) =

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,8 +43,7 @@ fun SidenavItem(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
+            .size(88.dp, 56.dp)
             .clip(Theme.shapes.roundedSmall)
             .background(background)
             .selectable(selected = selected, interactionSource = interactionSource, indication = null, role = Role.Tab, onClick = onClick)
@@ -51,7 +51,7 @@ fun SidenavItem(
         verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(vector = icon, tint = iconColor, size = 20.dp)
+        Icon(vector = icon, tint = iconColor, size = 24.dp)
         Text(text = label, style = Theme.typography.bodySmall, color = textColor, maxLines = 1)
     }
 }

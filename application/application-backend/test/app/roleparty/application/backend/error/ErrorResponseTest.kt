@@ -6,12 +6,14 @@ import app.roleparty.application.backend.i18n.Locales
 import app.roleparty.campaign.agenda.commons.GameSessionId
 import app.roleparty.campaign.agenda.domain.model.AgendaError
 import app.roleparty.campaign.commons.CampaignId
-import app.roleparty.campaign.commons.PlayerCharacterId
+import app.roleparty.campaign.creature.commons.PlayerCharacterId
 import app.roleparty.campaign.story.commons.SceneId
+import app.roleparty.campaign.creature.commons.CharacterSheetId
 import app.roleparty.campaign.creature.commons.MonsterSheetId
 import app.roleparty.campaign.creature.domain.model.CreatureError
 import app.roleparty.campaign.domain.model.CampaignError
-import app.roleparty.campaign.domain.model.playercharacter.classes.CharacterClass
+import app.roleparty.campaign.creature.domain.model.playercharacter.Ability
+import app.roleparty.campaign.library.commons.JournalEntryId
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.library.domain.model.LibraryError
 import app.roleparty.campaign.story.domain.model.StoryError
@@ -101,19 +103,33 @@ class ErrorResponseTest {
         ErrorCase("InvalidInvitationCode") { CampaignError.InvalidInvitationCode.localize(it) },
         ErrorCase("InvitationCodeAlreadyUsed") { CampaignError.InvitationCodeAlreadyUsed.localize(it) },
         ErrorCase("AlreadyParticipant") { CampaignError.AlreadyParticipant.localize(it) },
-        ErrorCase("PlayerCharacterNotFound") { CampaignError.PlayerCharacterNotFound(PlayerCharacterId.generate()).localize(it) },
-        ErrorCase("PlayerCharacterOwnerRequired") { CampaignError.PlayerCharacterOwnerRequired.localize(it) },
-        ErrorCase("WrongSkillCount") { CampaignError.WrongSkillCount(2).localize(it) },
-        ErrorCase("ClassNotHeld") { CampaignError.ClassNotHeld(CharacterClass.WIZARD).localize(it) },
-        ErrorCase("MaxLevelReached") { CampaignError.MaxLevelReached(CharacterClass.WIZARD).localize(it) },
         ErrorCase("SceneNotFound") { StoryError.SceneNotFound(SceneId.generate()).localize(it) },
         ErrorCase("DateInThePast") { AgendaError.DateInThePast.localize(it) },
         ErrorCase("GameSessionNotFound") { AgendaError.GameSessionNotFound(GameSessionId.generate()).localize(it) },
+        ErrorCase("GameSessionInThePast") { AgendaError.GameSessionInThePast.localize(it) },
+        ErrorCase("OthersPresenceForbidden") { AgendaError.OthersPresenceForbidden.localize(it) },
+        ErrorCase("ParticipantNotFound") { AgendaError.ParticipantNotFound(AccountId.generate()).localize(it) },
+        ErrorCase("GameMasterCannotBeAbsent") { AgendaError.GameMasterCannotBeAbsent.localize(it) },
         ErrorCase("BlankTitle") { LibraryError.BlankTitle.localize(it) },
         ErrorCase("LibraryEntryNotFound") { LibraryError.LibraryEntryNotFound(LibraryEntryId.generate()).localize(it) },
+        ErrorCase("Library.PlayerCharacterNotFound") { LibraryError.PlayerCharacterNotFound(PlayerCharacterId.generate()).localize(it) },
+        ErrorCase("Library.PlayerCharacterOwnerRequired") { LibraryError.PlayerCharacterOwnerRequired.localize(it) },
+        ErrorCase("JournalEntryNotFound") { LibraryError.JournalEntryNotFound(JournalEntryId.generate()).localize(it) },
         ErrorCase("MonsterSheetNotFound") { CreatureError.MonsterSheetNotFound(MonsterSheetId.generate()).localize(it) },
-    ) + CreatureError.InvalidMonsterSheet.Field.entries.map { field ->
-        ErrorCase("InvalidMonsterSheet.$field") { CreatureError.InvalidMonsterSheet(field).localize(it) }
+        ErrorCase("CharacterSheetNotFound") { CreatureError.CharacterSheetNotFound(CharacterSheetId.generate()).localize(it) },
+        ErrorCase("CharacterSheetNotLinked") { CreatureError.CharacterSheetNotLinked.localize(it) },
+        ErrorCase("InheritedStatsReadOnly") { CreatureError.InheritedStatsReadOnly.localize(it) },
+        ErrorCase("Creature.ParticipantRequired") { CreatureError.ParticipantRequired.localize(it) },
+        ErrorCase("PlayerCharacterNotFound") { CreatureError.PlayerCharacterNotFound(PlayerCharacterId.generate()).localize(it) },
+        ErrorCase("PlayerCharacterOwnerRequired") { CreatureError.PlayerCharacterOwnerRequired.localize(it) },
+        ErrorCase("BlankClassName") { CreatureError.BlankClassName.localize(it) },
+        ErrorCase("BlankBackgroundName") { CreatureError.BlankBackgroundName.localize(it) },
+        ErrorCase("BlankSpeciesName") { CreatureError.BlankSpeciesName.localize(it) },
+        ErrorCase("AbilityScoreOutOfRange") { CreatureError.AbilityScoreOutOfRange(Ability.WISDOM, 1, 20).localize(it) },
+        ErrorCase("NegativeValue") { CreatureError.NegativeValue.localize(it) },
+        ErrorCase("Creature.BlankName") { CreatureError.BlankName.localize(it) },
+    ) + CreatureError.InvalidSheet.Field.entries.map { field ->
+        ErrorCase("InvalidSheet.$field") { CreatureError.InvalidSheet(field).localize(it) }
     }
 
     private data class ErrorCase(val name: String, val translate: (Locale) -> LocalizedError)

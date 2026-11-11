@@ -2,6 +2,7 @@ package app.roleparty.campaign.frontend.component.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ fun CampaignSettings(
     error: String?,
     onGenerate: () -> Unit,
     modifier: Modifier = Modifier,
+    otherSections: @Composable ColumnScope.() -> Unit = {},
 ) {
     DetailPane(modifier = modifier) {
         SectionHeader(title = stringResource(Res.string.about))
@@ -65,6 +67,7 @@ fun CampaignSettings(
                 invitations.forEach { InvitationRow(it) }
             }
         }
+        otherSections()
     }
 }
 

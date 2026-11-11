@@ -1,7 +1,9 @@
 package app.roleparty.campaign.agenda.frontend.container.agenda
 
+import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.agenda.commons.GameSessionId
 import app.roleparty.campaign.agenda.contract.web.GameSessionResponseBody
+import app.roleparty.campaign.agenda.contract.web.ParticipantBody
 import app.roleparty.core.frontend.container.ViewModelState
 import app.roleparty.core.ktor.client.BackendFailure
 
@@ -10,6 +12,8 @@ sealed interface AgendaState : ViewModelState {
     data object Loading : AgendaState
 
     data class Loaded(
+        val requester: AccountId,
+        val participants: List<ParticipantBody>,
         val gameSessions: List<GameSessionResponseBody>,
         val selectedId: GameSessionId? = null,
         val scheduling: Boolean = false,

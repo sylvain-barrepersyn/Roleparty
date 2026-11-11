@@ -14,6 +14,7 @@ fun HttpClientConfig<*>.installApplicationAuthentication(
     install(Auth) {
         bearer {
             sendWithoutRequest { true }
+            cacheTokens = false
 
             loadTokens {
                 store.load()?.let { BearerTokens(it.accessToken, it.refreshToken) }

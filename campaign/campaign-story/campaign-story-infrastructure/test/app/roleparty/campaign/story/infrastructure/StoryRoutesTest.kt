@@ -6,6 +6,7 @@ import app.roleparty.campaign.story.contract.web.SceneResponseBody
 import app.roleparty.campaign.story.domain.model.StoryError
 import app.roleparty.campaign.story.infrastructure.adapter.primary.StoryLocalization
 import app.roleparty.campaign.story.test.StoryFixture
+import app.roleparty.campaign.story.test.document
 import app.roleparty.core.security.AccessTokenKeys
 import app.roleparty.core.security.installAuthentication
 import com.auth0.jwt.JWT
@@ -77,13 +78,13 @@ class StoryRoutesTest : FunSpec({
             client.post("/v1/campaigns/$campaignId/scenes") {
                 bearerAuth(tokenOf(AccountId.generate()))
                 contentType(ContentType.Application.Json)
-                setBody("""{"name":"Ambush","description":""}""")
+                setBody("""{"name":"Ambush","description":[]}""")
             }.status shouldBe HttpStatusCode.Forbidden
 
             val created = client.post("/v1/campaigns/$campaignId/scenes") {
                 bearerAuth(tokenOf(gameMaster))
                 contentType(ContentType.Application.Json)
-                setBody("""{"name":"Ambush","description":""}""")
+                setBody("""{"name":"Ambush","description":[]}""")
             }
             created.status shouldBe HttpStatusCode.Created
             val id = Json.decodeFromString<SceneCreatedResponseBody>(created.bodyAsText()).id
@@ -91,13 +92,13 @@ class StoryRoutesTest : FunSpec({
             client.put("/v1/campaigns/$campaignId/scenes/$id") {
                 bearerAuth(tokenOf(gameMaster))
                 contentType(ContentType.Application.Json)
-                setBody("""{"name":"Night ambush","description":"In the dark."}""")
+                setBody("""{"name":"Night ambush","description":[{"runs":[{"text":"In the dark."}]}]}""")
             }.status shouldBe HttpStatusCode.NoContent
 
             client.put("/v1/campaigns/$campaignId/scenes/$id/library/$entryId") { bearerAuth(tokenOf(gameMaster)) }.status shouldBe HttpStatusCode.NoContent
 
             val listed = client.get("/v1/campaigns/$campaignId/scenes") { bearerAuth(tokenOf(gameMaster)) }
-            Json.decodeFromString<List<SceneResponseBody>>(listed.bodyAsText()) shouldBe listOf(SceneResponseBody(id, "Night ambush", "In the dark.", listOf(entryId)))
+            Json.decodeFromString<List<SceneResponseBody>>(listed.bodyAsText()) shouldBe listOf(SceneResponseBody(id, "Night ambush", document("In the dark."), listOf(entryId)))
 
             client.delete("/v1/campaigns/$campaignId/scenes/$id/library/$entryId") { bearerAuth(tokenOf(gameMaster)) }.status shouldBe HttpStatusCode.NoContent
             fixtures.scene(id)?.libraryEntries shouldBe emptyList()

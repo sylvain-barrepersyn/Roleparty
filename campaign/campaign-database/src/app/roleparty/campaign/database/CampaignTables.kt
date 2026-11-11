@@ -26,37 +26,3 @@ object InvitationTable : Table("$SCHEMA_CAMPAIGN.invitation") {
 
     override val primaryKey = PrimaryKey(code)
 }
-
-object PlayerCharacterTable : Table("$SCHEMA_CAMPAIGN.player_character") {
-    val id = playerCharacterId("id")
-    val campaignId = campaignId("campaign_id")
-    val player = accountId("player")
-    val name = text("name")
-    val imageId = imageId("image_id")
-    val alignment = text("alignment")
-    val strength = integer("strength")
-    val dexterity = integer("dexterity")
-    val constitution = integer("constitution")
-    val intelligence = integer("intelligence")
-    val wisdom = integer("wisdom")
-    val charisma = integer("charisma")
-    val species = text("species")
-    val speciesSize = text("species_size").nullable()
-    val background = text("background")
-    val backgroundTool = text("background_tool").nullable()
-    val appearance = text("appearance")
-    val backstory = text("backstory")
-    val skillProficiencies = text("skill_proficiencies")
-    val languages = text("languages")
-
-    override val primaryKey = PrimaryKey(id)
-}
-
-object PlayerCharacterClassTable : Table("$SCHEMA_CAMPAIGN.player_character_class") {
-    val playerCharacterId = playerCharacterId("player_character_id")
-    val characterClass = text("character_class")
-    val level = integer("level")
-    val position = integer("position")
-
-    override val primaryKey = PrimaryKey(playerCharacterId, characterClass)
-}

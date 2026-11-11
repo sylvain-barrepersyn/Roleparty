@@ -1,6 +1,21 @@
 package app.roleparty.campaign.creature.test
 
 import app.roleparty.campaign.commons.CampaignId
+import app.roleparty.account.commons.AccountId
+import app.roleparty.campaign.creature.commons.PlayerCharacterId
+import app.roleparty.campaign.creature.domain.model.playercharacter.Ability
+import app.roleparty.campaign.creature.domain.model.playercharacter.AbilityScores as PlayerCharacterAbilityScores
+import app.roleparty.campaign.creature.domain.model.playercharacter.Alignment
+import app.roleparty.campaign.creature.domain.model.playercharacter.ArmorTraining
+import app.roleparty.campaign.creature.domain.model.playercharacter.Background
+import app.roleparty.campaign.creature.domain.model.playercharacter.CharacterClass
+import app.roleparty.campaign.creature.domain.model.playercharacter.HitDie
+import app.roleparty.campaign.creature.domain.model.playercharacter.PlayerCharacter
+import app.roleparty.campaign.creature.domain.model.playercharacter.PlayerCharacterCreation
+import app.roleparty.campaign.creature.domain.model.playercharacter.PlayerCharacterDetails
+import app.roleparty.campaign.creature.domain.model.playercharacter.Size
+import app.roleparty.campaign.creature.domain.model.playercharacter.Skill
+import app.roleparty.campaign.creature.domain.model.playercharacter.Species
 import app.roleparty.campaign.creature.commons.MonsterSheetId
 import app.roleparty.campaign.creature.domain.model.AbilityScores
 import app.roleparty.campaign.creature.domain.model.CreatureSkill
@@ -17,6 +32,7 @@ import app.roleparty.campaign.creature.domain.model.Languages
 import app.roleparty.campaign.creature.domain.model.LegendaryAction
 import app.roleparty.campaign.creature.domain.model.LegendaryActions
 import app.roleparty.campaign.creature.domain.model.MonsterSheet
+import app.roleparty.campaign.creature.domain.model.StatBlock
 import app.roleparty.campaign.creature.domain.model.MovementMode
 import app.roleparty.campaign.creature.domain.model.Condition
 import app.roleparty.campaign.creature.domain.model.CreatureAlignment
@@ -36,6 +52,10 @@ object CreatureSamples {
         campaignId = campaignId,
         name = "Young Red Dragon",
         image = ImageId.generate(),
+        stats = dragonStats(),
+    )
+
+    fun dragonStats() = StatBlock(
         size = CreatureSize.LARGE,
         type = CreatureType.DRAGON,
         challengeRating = ChallengeRating.CR_10,
@@ -68,4 +88,48 @@ object CreatureSamples {
         habitats = setOf(Habitat.MOUNTAIN, Habitat.HILL),
         treasures = setOf(Treasure.ARMAMENTS),
     )
+
+    fun playerCharacterCreation(campaignId: CampaignId, className: String = "Runesmith") = PlayerCharacterCreation(
+        campaignId = campaignId,
+        name = "Gimli",
+        image = ImageId.generate(),
+        className = className,
+        hitDie = HitDie.D10,
+        classFeatures = "Rune carving.",
+        savingThrows = setOf(Ability.STRENGTH, Ability.CONSTITUTION),
+        armorTrainings = setOf(ArmorTraining.LIGHT, ArmorTraining.MEDIUM, ArmorTraining.SHIELDS),
+        background = Background("Mountain guide", "Tough", "Cartographer's tools"),
+        skillProficiencies = setOf(Skill.ATHLETICS, Skill.PERCEPTION, Skill.SURVIVAL, Skill.HISTORY),
+        species = Species("Stone dwarf", Size.MEDIUM, 30, "Darkvision, stonecunning."),
+        languages = listOf("Common", "Dwarvish", "Giant"),
+        equipment = "Warhammer, chain shirt, explorer's pack.",
+        coins = 12,
+        abilityScores = PlayerCharacterAbilityScores(15, 13, 14, 10, 12, 8),
+        alignment = Alignment.LAWFUL_GOOD,
+        details = PlayerCharacterDetails("Bearded.", "Stubborn.", "From the mountains.", "Fears the sea."),
+    )
+
+    fun playerCharacter(campaignId: CampaignId, player: AccountId): PlayerCharacter {
+        val creation = playerCharacterCreation(campaignId)
+        return PlayerCharacter(
+            id = PlayerCharacterId.generate(),
+            campaignId = campaignId,
+            player = player,
+            name = creation.name,
+            image = creation.image,
+            classes = listOf(CharacterClass(creation.className, 1, creation.hitDie)),
+            classFeatures = creation.classFeatures,
+            savingThrows = creation.savingThrows,
+            armorTrainings = creation.armorTrainings,
+            background = creation.background,
+            skillProficiencies = creation.skillProficiencies,
+            species = creation.species,
+            languages = creation.languages,
+            equipment = creation.equipment,
+            coins = creation.coins,
+            abilityScores = creation.abilityScores,
+            alignment = creation.alignment,
+            details = creation.details,
+        )
+    }
 }

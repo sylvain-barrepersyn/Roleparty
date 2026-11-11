@@ -3,7 +3,10 @@ package app.roleparty.campaign.agenda.infrastructure
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.agenda.domain.model.CampaignParticipants
 import app.roleparty.campaign.commons.CampaignId
+import app.roleparty.campaign.creature.commons.PlayerCharacterId
 import app.roleparty.campaign.database.CampaignTable
+import app.roleparty.campaign.database.PlayerCharacterContent
+import app.roleparty.campaign.database.PlayerCharacterTable
 import app.roleparty.campaign.database.PlayerTable
 import app.roleparty.campaign.database.setUpCampaignSchema
 import app.roleparty.core.database.connectPostgres
@@ -47,5 +50,35 @@ internal object TestPostgres {
             }
         }
         return campaignId
+    }
+
+    suspend fun givenPlayerCharacter(campaignId: CampaignId, player: AccountId, characterName: String) {
+        suspendTransaction(database) {
+            PlayerCharacterTable.insert {
+                it[id] = PlayerCharacterId.generate()
+                it[PlayerCharacterTable.campaignId] = campaignId
+                it[PlayerCharacterTable.player] = player
+                it[name] = characterName
+                it[imageId] = ImageId.generate()
+                it[content] = PlayerCharacterContent(
+                    classes = emptyList(),
+                    classFeatures = "",
+                    savingThrows = emptySet(),
+                    armorTrainings = emptySet(),
+                    background = PlayerCharacterContent.BackgroundContent("", "", ""),
+                    skillProficiencies = emptySet(),
+                    species = PlayerCharacterContent.SpeciesContent("", "MEDIUM", 30, ""),
+                    languages = emptyList(),
+                    equipment = "",
+                    coins = 0,
+                    abilityScores = emptyMap(),
+                    alignment = "NEUTRAL",
+                    appearance = "",
+                    personality = "",
+                    backstory = "",
+                    otherDetails = "",
+                )
+            }
+        }
     }
 }

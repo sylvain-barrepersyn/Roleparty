@@ -3,9 +3,11 @@ package app.roleparty.campaign.creature.infrastructure
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.database.CampaignTable
+import app.roleparty.campaign.database.PlayerTable
 import app.roleparty.campaign.database.setUpCampaignSchema
 import app.roleparty.core.database.connectPostgres
 import app.roleparty.media.commons.ImageId
+import org.jetbrains.exposed.v1.r2dbc.batchInsert
 import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -27,7 +29,7 @@ internal object TestPostgres {
 
     val database get() = postgres.database
 
-    suspend fun givenCampaign(gameMaster: AccountId = AccountId.generate()): CampaignId {
+    suspend fun givenCampaign(gameMaster: AccountId = AccountId.generate(), players: Set<AccountId> = emptySet()): CampaignId {
         val campaignId = CampaignId.generate()
         suspendTransaction(database) {
             CampaignTable.insert {
@@ -36,6 +38,10 @@ internal object TestPostgres {
                 it[description] = ""
                 it[imageId] = ImageId.generate()
                 it[CampaignTable.gameMaster] = gameMaster
+            }
+            PlayerTable.batchInsert(players) { player ->
+                this[PlayerTable.campaignId] = campaignId
+                this[PlayerTable.accountId] = player
             }
         }
         return campaignId

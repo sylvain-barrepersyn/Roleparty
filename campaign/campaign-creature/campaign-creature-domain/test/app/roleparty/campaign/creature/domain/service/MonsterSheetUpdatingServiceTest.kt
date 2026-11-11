@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import app.roleparty.campaign.creature.domain.model.AbilityScores
 import app.roleparty.campaign.creature.domain.model.CreatureSkill
 import app.roleparty.campaign.creature.domain.model.SavingThrows
-import app.roleparty.campaign.creature.domain.model.CreatureError.InvalidMonsterSheet.Field
+import app.roleparty.campaign.creature.domain.model.CreatureError.InvalidSheet.Field
 import app.roleparty.campaign.creature.domain.model.LegendaryAction
 import app.roleparty.campaign.creature.domain.model.LegendaryActions
 import app.roleparty.campaign.creature.test.CreatureSamples
@@ -41,54 +41,54 @@ class MonsterSheetUpdatingServiceTest : CreatureBehaviorTest() {
             }
 
             When("the game master saves untrimmed texts and languages both spoken and understood") {
-                val untidy = dragon.copy(
-                    taxonomy = dragon.taxonomy.copy(tags = " Chromatic "),
+                val untidy = dragon.copy(stats = dragon.stats.copy(
+                    taxonomy = dragon.stats.taxonomy.copy(tags = " Chromatic "),
                     languages = Languages(setOf(CreatureLanguage.COMMON), understood = setOf(CreatureLanguage.COMMON, CreatureLanguage.ELVISH), other = " one other "),
                     gear = listOf(" Crown of embers "),
-                )
+                ))
                 fixtures.updateMonsterSheet(gameMaster, untidy).shouldBeSuccess()
 
                 Then("texts should be trimmed, and a spoken language not repeated as understood") {
                     val saved = fixtures.monsterSheet(id)
-                    saved.taxonomy.tags shouldBe "Chromatic"
-                    saved.languages shouldBe Languages(setOf(CreatureLanguage.COMMON), understood = setOf(CreatureLanguage.ELVISH), other = "one other")
-                    saved.gear shouldBe listOf("Crown of embers")
+                    saved.stats.taxonomy.tags shouldBe "Chromatic"
+                    saved.stats.languages shouldBe Languages(setOf(CreatureLanguage.COMMON), understood = setOf(CreatureLanguage.ELVISH), other = "one other")
+                    saved.stats.gear shouldBe listOf("Crown of embers")
                 }
             }
 
             When("the game master saves skills without bonus") {
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(skills = dragon.skills + (CreatureSkill.ARCANA to 0))).shouldBeSuccess()
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(skills = dragon.stats.skills + (CreatureSkill.ARCANA to 0)))).shouldBeSuccess()
 
                 Then("only the skills with a bonus should be kept") {
-                    fixtures.monsterSheet(id)?.skills shouldBe dragon.skills
+                    fixtures.monsterSheet(id).stats.skills shouldBe dragon.stats.skills
                 }
             }
 
             Then("invalid content should be refused with the faulty field") {
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(name = " ")) shouldBeFailure CreatureError.InvalidMonsterSheet(Field.NAME)
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(abilities = AbilityScores(31, 10, 10, 10, 10, 10))) shouldBeFailure
-                    CreatureError.InvalidMonsterSheet(Field.ABILITIES)
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(savingThrows = SavingThrows(wisdom = -1))) shouldBeFailure
-                    CreatureError.InvalidMonsterSheet(Field.SAVING_THROWS)
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(skills = mapOf(CreatureSkill.ARCANA to 21))) shouldBeFailure
-                    CreatureError.InvalidMonsterSheet(Field.SKILLS)
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(speeds = emptyMap())) shouldBeFailure CreatureError.InvalidMonsterSheet(Field.SPEEDS)
-                fixtures.updateMonsterSheet(gameMaster, dragon.copy(legendaryActions = LegendaryActions("", listOf(LegendaryAction("Move", "", 0))))) shouldBeFailure
-                    CreatureError.InvalidMonsterSheet(Field.LEGENDARY_ACTIONS)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(name = " ")) shouldBeFailure CreatureError.InvalidSheet(Field.NAME)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(abilities = AbilityScores(31, 10, 10, 10, 10, 10)))) shouldBeFailure
+                    CreatureError.InvalidSheet(Field.ABILITIES)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(savingThrows = SavingThrows(wisdom = -1)))) shouldBeFailure
+                    CreatureError.InvalidSheet(Field.SAVING_THROWS)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(skills = mapOf(CreatureSkill.ARCANA to 21)))) shouldBeFailure
+                    CreatureError.InvalidSheet(Field.SKILLS)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(speeds = emptyMap()))) shouldBeFailure CreatureError.InvalidSheet(Field.SPEEDS)
+                fixtures.updateMonsterSheet(gameMaster, dragon.copy(stats = dragon.stats.copy(legendaryActions = LegendaryActions("", listOf(LegendaryAction("Move", "", 0)))))) shouldBeFailure
+                    CreatureError.InvalidSheet(Field.LEGENDARY_ACTIONS)
             }
 
             Then("the new parts of the sheet should be checked too") {
                 suspend fun refused(sheet: MonsterSheet, field: Field) =
-                    fixtures.updateMonsterSheet(gameMaster, sheet) shouldBeFailure CreatureError.InvalidMonsterSheet(field)
+                    fixtures.updateMonsterSheet(gameMaster, sheet) shouldBeFailure CreatureError.InvalidSheet(field)
 
-                refused(dragon.copy(taxonomy = Taxonomy(alternativeSize = dragon.size)), Field.TAXONOMY)
-                refused(dragon.copy(taxonomy = Taxonomy(swarmOf = CreatureSize.GARGANTUAN)), Field.TAXONOMY)
-                refused(dragon.copy(speeds = mapOf(MovementMode.WALK to 30), hover = true), Field.SPEEDS)
-                refused(dragon.copy(senses = mapOf(Sense.DARKVISION to 0)), Field.SENSES)
-                refused(dragon.copy(defenses = Defenses(resistances = setOf(DamageType.FIRE), immunities = setOf(DamageType.FIRE))), Field.DEFENSES)
-                refused(dragon.copy(gear = listOf(" ")), Field.GEAR)
-                refused(dragon.copy(legendaryActions = dragon.legendaryActions.copy(uses = 0)), Field.LEGENDARY_ACTIONS)
-                refused(dragon.copy(legendaryActions = dragon.legendaryActions.copy(uses = 3, usesInLair = 2)), Field.LEGENDARY_ACTIONS)
+                refused(dragon.copy(stats = dragon.stats.copy(taxonomy = Taxonomy(alternativeSize = dragon.stats.size))), Field.TAXONOMY)
+                refused(dragon.copy(stats = dragon.stats.copy(taxonomy = Taxonomy(swarmOf = CreatureSize.GARGANTUAN))), Field.TAXONOMY)
+                refused(dragon.copy(stats = dragon.stats.copy(speeds = mapOf(MovementMode.WALK to 30), hover = true)), Field.SPEEDS)
+                refused(dragon.copy(stats = dragon.stats.copy(senses = mapOf(Sense.DARKVISION to 0))), Field.SENSES)
+                refused(dragon.copy(stats = dragon.stats.copy(defenses = Defenses(resistances = setOf(DamageType.FIRE), immunities = setOf(DamageType.FIRE)))), Field.DEFENSES)
+                refused(dragon.copy(stats = dragon.stats.copy(gear = listOf(" "))), Field.GEAR)
+                refused(dragon.copy(stats = dragon.stats.copy(legendaryActions = dragon.stats.legendaryActions.copy(uses = 0))), Field.LEGENDARY_ACTIONS)
+                refused(dragon.copy(stats = dragon.stats.copy(legendaryActions = dragon.stats.legendaryActions.copy(uses = 3, usesInLair = 2))), Field.LEGENDARY_ACTIONS)
             }
 
             Then("anyone else, or the sheet moved to another campaign, should be refused") {

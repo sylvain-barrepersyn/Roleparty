@@ -27,10 +27,9 @@ import app.roleparty.core.designsystem.theme.Theme
 
 @Composable
 fun TabGroup(modifier: Modifier = Modifier, tabs: @Composable RowScope.() -> Unit) {
-    Surface(modifier = modifier.height(40.dp)) {
+    Surface(modifier = modifier.height(40.dp), shape = Theme.shapes.roundedSmall) {
         Row(
-            modifier = Modifier.padding(4.dp).selectableGroup(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.selectableGroup(),
             content = tabs,
         )
     }

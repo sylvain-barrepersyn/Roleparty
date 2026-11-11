@@ -10,6 +10,7 @@ import app.roleparty.campaign.frontend.container.data.CampaignApi
 import app.roleparty.core.commons.Outcome
 import app.roleparty.core.ktor.client.BackendFailure
 import app.roleparty.media.commons.ImageId
+import kotlinx.datetime.LocalDate
 
 internal class FakeCampaignApi : CampaignApi {
 
@@ -28,8 +29,8 @@ internal class FakeCampaignApi : CampaignApi {
         return failure?.let { Outcome.Failure(it) } ?: Outcome.Success(value())
     }
 
-    override suspend fun campaigns(participation: Participation) =
-        answer("campaigns $participation") { if (participation == Participation.GAME_MASTER) mastered else played }
+    override suspend fun campaigns(participation: Participation, today: LocalDate) =
+        answer("campaigns $participation $today") { if (participation == Participation.GAME_MASTER) mastered else played }
 
     override suspend fun campaign(campaignId: CampaignId) = answer("campaign") { campaign }
 

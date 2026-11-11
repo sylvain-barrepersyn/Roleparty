@@ -9,6 +9,12 @@ settings:
       packageName: app.roleparty.designsystem.resources
 
 dependencies:
+  - //core/core-document: exported
   - $libs.kotlinx.datetime: exported
   - $libs.richeditor.compose
   - $libs.squircle.shape
+
+test-dependencies:
+  - //core/core-test
+  - $compose.desktop.currentOs
+  - $compose.uiTest

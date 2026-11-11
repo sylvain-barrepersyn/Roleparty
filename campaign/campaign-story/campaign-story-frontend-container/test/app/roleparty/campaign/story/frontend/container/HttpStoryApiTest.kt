@@ -4,6 +4,9 @@ import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.story.commons.SceneId
 import app.roleparty.campaign.story.contract.web.SceneRequestBody
 import app.roleparty.campaign.story.frontend.container.data.HttpStoryApi
+import app.roleparty.core.document.TextRun
+import app.roleparty.core.document.Paragraph
+import app.roleparty.core.document.Document
 import app.roleparty.core.ktor.client.BackendFailure
 import app.roleparty.core.ktor.client.installBackend
 import app.roleparty.core.test.shouldBeFailure
@@ -65,8 +68,8 @@ class HttpStoryApiTest : FunSpec() {
         }
 
         test("a scene change should be sent to the scene of the campaign") {
-            api.changeScene(campaignId, sceneId, "Ambush", "Goblins").shouldBeSuccess()
-            received shouldContainExactly listOf("$campaignId/$sceneId", SceneRequestBody("Ambush", "Goblins"))
+            api.changeScene(campaignId, sceneId, "Ambush", document("Goblins")).shouldBeSuccess()
+            received shouldContainExactly listOf("$campaignId/$sceneId", SceneRequestBody("Ambush", document("Goblins")))
         }
 
         test("a refusal should carry the message of the backend") {
@@ -74,3 +77,5 @@ class HttpStoryApiTest : FunSpec() {
         }
     }
 }
+
+private fun document(text: String) = Document.from(listOf(Paragraph(runs = listOf(TextRun(text)))))

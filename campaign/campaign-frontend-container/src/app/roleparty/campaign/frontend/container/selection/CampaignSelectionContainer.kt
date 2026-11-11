@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import app.roleparty.campaign.commons.CampaignId
-import app.roleparty.campaign.contract.web.Participation
 import app.roleparty.campaign.frontend.component.selection.CampaignSelection
 import app.roleparty.core.frontend.container.Container
 import app.roleparty.core.frontend.container.message
@@ -13,6 +12,7 @@ import org.koin.compose.koinInject
 
 class CampaignSelectionContainer(
     private val onMasteredCampaignOpened: (CampaignId) -> Unit,
+    private val onPlayedCampaignOpened: (CampaignId) -> Unit,
     private val onCampaignCreationRequested: () -> Unit,
     private val onCampaignJoiningRequested: () -> Unit,
     private val footer: @Composable RowScope.() -> Unit = {},
@@ -26,11 +26,12 @@ class CampaignSelectionContainer(
         CampaignSelection(
             participation = state.participation,
             campaigns = (state as? CampaignSelectionState.Loaded)?.campaigns,
+            today = (state as? CampaignSelectionState.Loaded)?.today,
             error = (state as? CampaignSelectionState.Failed)?.failure?.message(),
             imageUrl = media::imageUrl,
             onParticipationChange = { handle(CampaignSelectionAction.ShowParticipation(it)) },
             onRefresh = { handle(CampaignSelectionAction.Refresh) },
-            onSelect = if (state.participation == Participation.GAME_MASTER) { id -> handle(CampaignSelectionAction.OpenMasteredCampaign(id)) } else null,
+            onSelect = { handle(CampaignSelectionAction.OpenCampaign(it)) },
             onCreate = { handle(CampaignSelectionAction.CreateCampaign) },
             onJoin = { handle(CampaignSelectionAction.JoinCampaign) },
             footer = footer,
@@ -39,6 +40,7 @@ class CampaignSelectionContainer(
 
     override fun onEvent(event: CampaignSelectionEvent) = when (event) {
         is CampaignSelectionEvent.MasteredCampaignOpened -> onMasteredCampaignOpened(event.campaignId)
+        is CampaignSelectionEvent.PlayedCampaignOpened -> onPlayedCampaignOpened(event.campaignId)
         CampaignSelectionEvent.CampaignCreationRequested -> onCampaignCreationRequested()
         CampaignSelectionEvent.CampaignJoiningRequested -> onCampaignJoiningRequested()
     }

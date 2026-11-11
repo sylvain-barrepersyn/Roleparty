@@ -7,4 +7,12 @@
     <string name="select_entry">Sélectionnez un élément pour le modifier.</string>
     <string name="cancel">Annuler</string>
     <string name="creating">Création…</string>
+    <string name="no_journal_entries">Le journal est vide.</string>
+    <string name="untitled_journal_entry">Entrée sans titre</string>
+    <string name="select_journal_entry">Sélectionnez une entrée pour la lire ou l’écrire.</string>
+    <string name="journal_entry_title">Titre</string>
+    <string name="journal_entry_text">Note</string>
+    <string name="journal_entry_images">Images</string>
+    <string name="add_image">Ajouter une image</string>
+    <string name="remove_image">Retirer l’image</string>
 </resources>

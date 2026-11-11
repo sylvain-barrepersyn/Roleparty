@@ -4,16 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,7 +20,6 @@ import app.roleparty.campaign.library.contract.web.LibraryEntryResponseBody
 import app.roleparty.campaign.story.commons.SceneId
 import app.roleparty.campaign.story.contract.web.SceneResponseBody
 import app.roleparty.campaign.story.frontend.component.resources.Res
-import app.roleparty.campaign.story.frontend.component.resources.add_scene
 import app.roleparty.campaign.story.frontend.component.resources.cancel
 import app.roleparty.campaign.story.frontend.component.resources.delete_scene
 import app.roleparty.campaign.story.frontend.component.resources.delete_scene_confirmation
@@ -39,7 +36,8 @@ import app.roleparty.core.designsystem.button.Button
 import app.roleparty.core.designsystem.button.ButtonSize
 import app.roleparty.core.designsystem.dialog.Dialog
 import app.roleparty.core.designsystem.feedback.EmptyState
-import app.roleparty.core.designsystem.field.text.RichTextField
+import app.roleparty.core.designsystem.field.text.ParagraphsField
+import app.roleparty.core.document.Document
 import app.roleparty.core.designsystem.field.text.StringField
 import app.roleparty.core.designsystem.icon.IconVector
 import app.roleparty.core.designsystem.layout.CenteredBox
@@ -47,11 +45,11 @@ import app.roleparty.core.designsystem.layout.DetailPane
 import app.roleparty.core.designsystem.layout.ListDetailLayout
 import app.roleparty.core.designsystem.layout.ListItem
 import app.roleparty.core.designsystem.layout.SectionHeader
-import app.roleparty.core.designsystem.layout.Thumbnail
 import app.roleparty.core.designsystem.text.Text
 import app.roleparty.core.designsystem.theme.Theme
 import app.roleparty.media.commons.ImageId
-import app.roleparty.media.frontend.component.ImageThumbnail
+import app.roleparty.media.frontend.component.ImageMosaicThumbnail
+import app.roleparty.media.frontend.component.ThumbnailImage
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -64,7 +62,7 @@ fun Scenes(
     onSelect: (SceneId) -> Unit,
     onCreate: (defaultName: String) -> Unit,
     onNameChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
+    onDescriptionChange: (Document) -> Unit,
     onDelete: () -> Unit,
     onLinkLibraryEntry: (LibraryEntryId) -> Unit,
     onUnlinkLibraryEntry: (LibraryEntryId) -> Unit,
@@ -80,7 +78,12 @@ fun Scenes(
                 ListItem(
                     selected = scene.id == selected?.id,
                     onClick = { onSelect(scene.id) },
-                    thumbnail = { SceneThumbnail(scene.libraryEntryIds.mapNotNull { id -> libraryEntries.firstOrNull { it.id == id } }, imageUrl) },
+                    thumbnail = {
+                        ImageMosaicThumbnail(
+                            scene.libraryEntryIds.mapNotNull { id -> libraryEntries.firstOrNull { it.id == id } }
+                                .map { ThumbnailImage(imageUrl(it.imageId), it.title) }
+                        )
+                    },
                 ) {
                     Text(text = scene.name, style = Theme.typography.title, maxLines = 1)
                 }
@@ -113,7 +116,7 @@ private fun SceneDetail(
     error: String?,
     imageUrl: (ImageId) -> String,
     onNameChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
+    onDescriptionChange: (Document) -> Unit,
     onDelete: () -> Unit,
     onLinkLibraryEntry: (LibraryEntryId) -> Unit,
     onUnlinkLibraryEntry: (LibraryEntryId) -> Unit,
@@ -136,10 +139,10 @@ private fun SceneDetail(
             required = true,
             modifier = Modifier.fillMaxWidth(),
         )
-        RichTextField(
-            markdown = scene.description,
-            onMarkdownChange = onDescriptionChange,
-            label = stringResource(Res.string.scene_description),
+        ParagraphsField(
+            document = scene.description,
+            onDocumentChange = onDescriptionChange,
+            structured = true,
             modifier = Modifier.fillMaxWidth(),
         )
         SectionHeader(title = stringResource(Res.string.scene_library))
@@ -180,37 +183,5 @@ private fun LibraryEntryRow(entry: LibraryEntryResponseBody, imageUrl: (ImageId)
         EntryImage(url = imageUrl(entry.imageId), contentDescription = entry.title, size = 40.dp)
         Text(text = entry.title, color = Theme.colors.textPrimary, modifier = Modifier.weight(1f))
         action()
-    }
-}
-
-private val THUMBNAIL_GAP = 2.dp
-private const val THUMBNAIL_CELLS = 4
-
-@Composable
-private fun SceneThumbnail(entries: List<LibraryEntryResponseBody>, imageUrl: (ImageId) -> String) {
-    if (entries.size == 1) {
-        val entry = entries.single()
-        ImageThumbnail(url = imageUrl(entry.imageId), contentDescription = entry.title)
-        return
-    }
-
-    val overflowing = entries.size > THUMBNAIL_CELLS
-    val shown = if (overflowing) entries.take(THUMBNAIL_CELLS - 1) else entries
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(THUMBNAIL_GAP)) {
-        repeat(2) { row ->
-            Row(modifier = Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(THUMBNAIL_GAP)) {
-                repeat(2) { column ->
-                    val index = row * 2 + column
-                    val cell = Modifier.weight(1f).fillMaxHeight()
-                    when {
-                        index < shown.size -> ImageThumbnail(url = imageUrl(shown[index].imageId), contentDescription = shown[index].title, modifier = cell, shape = Theme.shapes.roundedSmall)
-                        overflowing -> Thumbnail(modifier = cell, shape = Theme.shapes.roundedSmall) {
-                            Text(text = "…", style = Theme.typography.bodySmall, maxLines = 1)
-                        }
-                        else -> Thumbnail(modifier = cell, shape = Theme.shapes.roundedSmall)
-                    }
-                }
-            }
-        }
     }
 }

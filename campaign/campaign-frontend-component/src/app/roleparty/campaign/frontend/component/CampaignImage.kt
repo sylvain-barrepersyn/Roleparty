@@ -18,7 +18,7 @@ fun CampaignImage(url: String, contentDescription: String?, modifier: Modifier =
     RemoteImage(
         url = url,
         contentDescription = contentDescription,
-        modifier = modifier.width(size).aspectRatio(80f / 64f).clip(Theme.shapes.rounded),
+        modifier = modifier.width(size).aspectRatio(80f / 64f).clip(Theme.shapes.roundedSmall),
         contentScale = ContentScale.Crop,
     )
 }

@@ -29,13 +29,13 @@ abstract class MonsterSheetsContractTest(createSubject: () -> MonsterSheetsContr
                 monsterSheets.findById(empty.id) shouldBe empty
                 monsterSheets.findById(MonsterSheetId.generate()).shouldBeNull()
                 monsterSheets.overviewsOf(campaignId) shouldBe listOf(empty, dragon).map {
-                    MonsterSheetOverview(it.id, it.name, it.image, it.type, it.size, it.challengeRating)
+                    MonsterSheetOverview(it.id, it.name, it.image, it.stats.type, it.stats.size, it.stats.challengeRating)
                 }
                 monsterSheets.overviewsOf(subject.givenCampaign()) shouldBe emptyList()
             }
 
             When("one is saved again with changes") {
-                val changed = dragon.copy(name = "Adult Red Dragon", image = null, actions = emptyList())
+                val changed = dragon.copy(name = "Adult Red Dragon", image = null, stats = dragon.stats.copy(actions = emptyList()))
                 monsterSheets.save(changed)
 
                 Then("it should be found as changed") {

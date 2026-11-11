@@ -6,6 +6,7 @@ apply:
 dependencies:
   - //core/core-commons: exported
   - //campaign/campaign-library/campaign-library-commons: exported
+  - //campaign/campaign-creature/campaign-creature-commons: exported
 
 test-dependencies:
   - //campaign/campaign-library/campaign-library-test

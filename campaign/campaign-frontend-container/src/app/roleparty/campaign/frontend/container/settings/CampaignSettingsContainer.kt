@@ -1,6 +1,7 @@
 package app.roleparty.campaign.frontend.container.settings
 
 import androidx.compose.runtime.Composable
+import app.roleparty.campaign.agenda.frontend.container.settings.AgendaSettingsContainer
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.contract.web.CampaignResponseBody
 import app.roleparty.campaign.frontend.component.settings.CampaignSettings
@@ -9,7 +10,7 @@ import app.roleparty.core.frontend.container.Container
 import app.roleparty.core.frontend.container.message
 
 class CampaignSettingsContainer(
-    campaignId: CampaignId,
+    private val campaignId: CampaignId,
     private val campaign: CampaignResponseBody,
 ) : Container<CampaignSettingsState, CampaignSettingsAction, CampaignSettingsEvent, CampaignSettingsViewModel>(CampaignSettingsViewModel::class, campaignId) {
 
@@ -25,6 +26,7 @@ class CampaignSettingsContainer(
                     generating = loaded?.generating == true,
                     error = loaded?.failure?.message(),
                     onGenerate = { handle(CampaignSettingsAction.GenerateInvitation) },
+                    otherSections = { AgendaSettingsContainer(campaignId).Render() },
                 )
             }
         }

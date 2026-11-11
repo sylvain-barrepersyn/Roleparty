@@ -8,7 +8,7 @@ import app.roleparty.core.frontend.container.Container
 import app.roleparty.core.frontend.container.RetryableFailure
 import app.roleparty.core.frontend.container.message
 
-class AgendaContainer(campaignId: CampaignId) :
+class AgendaContainer(campaignId: CampaignId, private val editable: Boolean = true) :
     Container<AgendaState, AgendaAction, AgendaEvent, AgendaViewModel>(AgendaViewModel::class, campaignId) {
 
     @Composable
@@ -22,10 +22,14 @@ class AgendaContainer(campaignId: CampaignId) :
                 scheduling = state.scheduling,
                 error = state.failure?.message(),
                 onSelect = { handle(AgendaAction.Select(it)) },
-                onOpenScheduling = { handle(AgendaAction.OpenScheduling) },
                 onCancelScheduling = { handle(AgendaAction.CancelScheduling) },
                 onSchedule = { handle(AgendaAction.Schedule(it)) },
-                onNameChange = { handle(AgendaAction.ChangeName(it)) },
+                participants = state.participants,
+                requester = state.requester,
+                onPresenceChange = { participant, presence -> handle(AgendaAction.ChangePresence(participant, presence)) },
+                onDigitalGamingTableChange = { handle(AgendaAction.ChangeDigitalGamingTable(it)) },
+                onOpenScheduling = if (editable) { { handle(AgendaAction.OpenScheduling) } } else null,
+                onNameChange = if (editable) { { handle(AgendaAction.ChangeName(it)) } } else null,
             )
         }
     }

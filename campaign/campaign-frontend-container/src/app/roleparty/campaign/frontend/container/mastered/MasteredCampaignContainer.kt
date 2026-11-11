@@ -3,7 +3,7 @@ package app.roleparty.campaign.frontend.container.mastered
 import androidx.compose.runtime.Composable
 import app.roleparty.campaign.agenda.frontend.container.agenda.AgendaContainer
 import app.roleparty.campaign.commons.CampaignId
-import app.roleparty.campaign.creature.frontend.container.monster.MonsterSheetsContainer
+import app.roleparty.campaign.creature.frontend.container.creatures.CreaturesContainer
 import app.roleparty.campaign.frontend.component.mastered.MasteredCampaignLayout
 import app.roleparty.campaign.frontend.component.mastered.MasteredCampaignSection
 import app.roleparty.campaign.frontend.container.settings.CampaignSettingsContainer
@@ -41,7 +41,7 @@ class MasteredCampaignContainer(
                         MasteredCampaignSection.AGENDA -> AgendaContainer(campaignId).Render()
                         MasteredCampaignSection.SCENES -> ScenesContainer(campaignId).Render()
                         MasteredCampaignSection.LIBRARY -> LibraryContainer(campaignId).Render()
-                        MasteredCampaignSection.MONSTERS -> MonsterSheetsContainer(campaignId).Render()
+                        MasteredCampaignSection.CREATURES -> CreaturesContainer(campaignId).Render()
                         MasteredCampaignSection.SETTINGS -> CampaignSettingsContainer(campaignId, state.campaign).Render()
                     }
                 }

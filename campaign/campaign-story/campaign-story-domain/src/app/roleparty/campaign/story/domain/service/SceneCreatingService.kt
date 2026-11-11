@@ -1,5 +1,6 @@
 package app.roleparty.campaign.story.domain.service
 
+import app.roleparty.core.document.Document
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.story.commons.SceneId
@@ -14,11 +15,11 @@ internal class SceneCreatingService(
     private val gameMaster: GameMasterCheckingService,
 ) : CreateScene {
 
-    override suspend fun invoke(requester: AccountId, campaignId: CampaignId, name: String, description: String): Outcome<SceneId, StoryError> {
+    override suspend fun invoke(requester: AccountId, campaignId: CampaignId, name: String, description: Document): Outcome<SceneId, StoryError> {
         gameMaster.check(requester, campaignId)?.let { return Outcome.Failure(it) }
         if (name.isBlank()) return Outcome.Failure(StoryError.BlankName)
 
-        val scene = Scene(SceneId.generate(), campaignId, name.trim(), description.trim())
+        val scene = Scene(SceneId.generate(), campaignId, name.trim(), Document.from(description.paragraphs))
         scenes.save(scene)
         return Outcome.Success(scene.id)
     }

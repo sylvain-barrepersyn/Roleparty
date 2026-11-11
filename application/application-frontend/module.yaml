@@ -13,6 +13,7 @@ settings:
 dependencies:
   - //core/core-designsystem
   - //campaign/campaign-frontend-container
+  - //campaign/campaign-creature/campaign-creature-frontend-container
   - //media/media-frontend-container
   - //security/security-frontend-container
   - $libs.navigationevent.compose

@@ -6,4 +6,6 @@ import app.roleparty.campaign.commons.CampaignId
 interface Campaigns {
 
     suspend fun gameMasterOf(campaignId: CampaignId): AccountId?
+
+    suspend fun playersOf(campaignId: CampaignId): Set<AccountId>
 }

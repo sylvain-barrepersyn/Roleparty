@@ -72,7 +72,7 @@ internal fun MonsterSheetDialogs(
     imageField: ImageFieldSlot,
 ) {
     when (dialog) {
-        null -> Unit
+        null, SheetDialog.Notes -> Unit
         SheetDialog.Image -> ImageDialog(sheet.imageId, imageField, onDismiss) { onChange(sheet.copy(imageId = it)) }
         SheetDialog.Name -> NameDialog(sheet.name, onDismiss) { onChange(sheet.copy(name = it)) }
         SheetDialog.Taxonomy -> TaxonomyDialog(sheet, onDismiss, onChange)
@@ -661,6 +661,27 @@ private fun LegendaryDescriptionDialog(initial: MonsterSheetBody.LegendaryAction
             label = stringResource(Res.string.legendary_actions_description),
             modifier = Modifier.fillMaxWidth(),
         )
+    }
+}
+
+@Composable
+internal fun NotesDialog(initial: String, onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
+    var notes by remember { mutableStateOf(initial) }
+    EditionDialog(onDismiss, onConfirm = { onConfirm(notes.trim()) }, width = 600.dp) {
+        RichTextField(markdown = notes, onMarkdownChange = { notes = it }, label = stringResource(Res.string.notes), modifier = Modifier.fillMaxWidth())
+    }
+}
+
+@Composable
+internal fun UnlinkDialog(monster: String, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    Dialog(displayed = true, onDismiss = onDismiss, modifier = Modifier.width(480.dp)) {
+        Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Text(text = stringResource(Res.string.unlink_confirmation, monster), color = Theme.colors.textPrimary)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(leadingIcon = IconVector.CANCEL, text = stringResource(Res.string.cancel), onClick = onDismiss)
+                Button(leadingIcon = IconVector.CONFIRM, text = stringResource(Res.string.unlink), onClick = onConfirm)
+            }
+        }
     }
 }
 

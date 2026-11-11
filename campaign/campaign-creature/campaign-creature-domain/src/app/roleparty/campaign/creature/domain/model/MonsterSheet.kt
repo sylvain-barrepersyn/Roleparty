@@ -9,6 +9,14 @@ data class MonsterSheet(
     val campaignId: CampaignId,
     val name: String,
     val image: ImageId?,
+    val stats: StatBlock,
+) {
+    companion object {
+        fun empty(id: MonsterSheetId, campaignId: CampaignId) = MonsterSheet(id, campaignId, "Monster", null, StatBlock.DEFAULT)
+    }
+}
+
+data class StatBlock(
     val size: CreatureSize,
     val type: CreatureType,
     val challengeRating: ChallengeRating,
@@ -37,11 +45,7 @@ data class MonsterSheet(
     val treasures: Set<Treasure> = emptySet(),
 ) {
     companion object {
-        fun empty(id: MonsterSheetId, campaignId: CampaignId) = MonsterSheet(
-            id = id,
-            campaignId = campaignId,
-            name = "Monster",
-            image = null,
+        val DEFAULT = StatBlock(
             size = CreatureSize.MEDIUM,
             type = CreatureType.BEAST,
             challengeRating = ChallengeRating.CR_1,

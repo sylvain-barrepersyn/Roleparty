@@ -1,5 +1,8 @@
 package app.roleparty.campaign.story.frontend.container
 
+import app.roleparty.core.document.Document
+import app.roleparty.core.document.TextRun
+import app.roleparty.core.document.Paragraph
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.library.contract.web.LibraryEntryResponseBody
@@ -28,7 +31,7 @@ private class FakeStoryApi : StoryApi {
     val campaignId: CampaignId = CampaignId.generate()
     val calls = mutableListOf<String>()
     var failure: BackendFailure? = null
-    val scenes = mutableListOf(SceneResponseBody(SceneId.generate(), "Arrival", "Mist everywhere.", emptyList()))
+    val scenes = mutableListOf(SceneResponseBody(SceneId.generate(), "Arrival", document("Mist everywhere."), emptyList()))
     val createdSceneId: SceneId = SceneId.generate()
     val libraryEntries = listOf(entry("Village"), entry("Castle"))
 
@@ -39,10 +42,10 @@ private class FakeStoryApi : StoryApi {
 
     override suspend fun scenes(campaignId: CampaignId) = answer("scenes") { scenes.toList() }
 
-    override suspend fun createScene(campaignId: CampaignId, name: String, description: String) = answer("create scene $name") { createdSceneId }
+    override suspend fun createScene(campaignId: CampaignId, name: String, description: Document) = answer("create scene $name") { createdSceneId }
 
-    override suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: String) =
-        answer("change scene $name|$description") { }
+    override suspend fun changeScene(campaignId: CampaignId, sceneId: SceneId, name: String, description: Document) =
+        answer("change scene $name|${description.paragraphs.joinToString { it.text }}") { }
 
     override suspend fun deleteScene(campaignId: CampaignId, sceneId: SceneId) = answer("delete scene") { }
 
@@ -79,7 +82,7 @@ class ScenesViewModelTest : FunSpec({
         viewModel.handle(ScenesAction.Create("New scene"))
         viewModel.loaded().selected?.id shouldBe api.createdSceneId
 
-        viewModel.handle(ScenesAction.ChangeDescription("**Fog** rolls in"))
+        viewModel.handle(ScenesAction.ChangeDescription(document("Fog rolls in")))
         viewModel.handle(ScenesAction.LinkLibraryEntry(entry.id))
         viewModel.loaded().selected?.libraryEntryIds shouldContainExactly listOf(entry.id)
         dispatcher.scheduler.advanceUntilIdle()
@@ -91,7 +94,7 @@ class ScenesViewModelTest : FunSpec({
         viewModel.loaded().scenes.map { it.name } shouldContainExactly listOf("Arrival")
         viewModel.loaded().selected.shouldBeNull()
         api.calls.filterNot { it == "library" } shouldContainExactly listOf(
-            "scenes", "create scene New scene", "link", "change scene New scene|**Fog** rolls in", "unlink", "delete scene",
+            "scenes", "create scene New scene", "link", "change scene New scene|Fog rolls in", "unlink", "delete scene",
         )
     }
 
@@ -107,3 +110,5 @@ class ScenesViewModelTest : FunSpec({
         viewModel.loaded().failure shouldBe BackendFailure.Rejected("campaign.blank-name", "Name it.")
     }
 })
+
+private fun document(text: String) = Document.from(listOf(Paragraph(runs = listOf(TextRun(text)))))

@@ -58,11 +58,6 @@ fun CampaignError.localize(locale: Locale) = when (this) {
     CampaignError.InvalidInvitationCode -> localize(HttpStatusCode.BadRequest, "campaign.invalid-invitation-code", locale)
     CampaignError.InvitationCodeAlreadyUsed -> localize(HttpStatusCode.Conflict, "campaign.invitation-code-already-used", locale)
     CampaignError.AlreadyParticipant -> localize(HttpStatusCode.Conflict, "campaign.already-participant", locale)
-    is CampaignError.PlayerCharacterNotFound -> localize(HttpStatusCode.NotFound, "campaign.player-character-not-found", locale, playerCharacterId)
-    CampaignError.PlayerCharacterOwnerRequired -> localize(HttpStatusCode.Forbidden, "campaign.player-character-owner-required", locale)
-    is CampaignError.WrongSkillCount -> localize(HttpStatusCode.BadRequest, "campaign.wrong-skill-count", locale, expected)
-    is CampaignError.ClassNotHeld -> localize(HttpStatusCode.BadRequest, "campaign.class-not-held", locale, characterClass.name)
-    is CampaignError.MaxLevelReached -> localize(HttpStatusCode.Conflict, "campaign.max-level-reached", locale, characterClass.name)
 }
 
 fun StoryError.localize(locale: Locale) = when (this) {
@@ -80,13 +75,29 @@ fun AgendaError.localize(locale: Locale) = when (this) {
     AgendaError.BlankName -> localize(HttpStatusCode.BadRequest, "campaign.blank-name", locale)
     AgendaError.DateInThePast -> localize(HttpStatusCode.BadRequest, "campaign.agenda.date-in-the-past", locale)
     is AgendaError.GameSessionNotFound -> localize(HttpStatusCode.NotFound, "campaign.agenda.game-session-not-found", locale, gameSessionId)
+    AgendaError.GameSessionInThePast -> localize(HttpStatusCode.Conflict, "campaign.agenda.game-session-in-the-past", locale)
+    AgendaError.OthersPresenceForbidden -> localize(HttpStatusCode.Forbidden, "campaign.agenda.others-presence-forbidden", locale)
+    is AgendaError.ParticipantNotFound -> localize(HttpStatusCode.NotFound, "campaign.agenda.participant-not-found", locale, accountId)
+    AgendaError.GameMasterCannotBeAbsent -> localize(HttpStatusCode.BadRequest, "campaign.agenda.game-master-cannot-be-absent", locale)
 }
 
 fun CreatureError.localize(locale: Locale) = when (this) {
     is CreatureError.CampaignNotFound -> localize(HttpStatusCode.NotFound, "campaign.not-found", locale, campaignId)
     CreatureError.GameMasterRequired -> localize(HttpStatusCode.Forbidden, "campaign.game-master-required", locale)
     is CreatureError.MonsterSheetNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.monster-sheet-not-found", locale, monsterSheetId)
-    is CreatureError.InvalidMonsterSheet -> localize(HttpStatusCode.BadRequest, "campaign.creature.invalid-${field.name.lowercase().replace('_', '-')}", locale)
+    is CreatureError.CharacterSheetNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.character-sheet-not-found", locale, characterSheetId)
+    CreatureError.CharacterSheetNotLinked -> localize(HttpStatusCode.Conflict, "campaign.creature.character-sheet-not-linked", locale)
+    CreatureError.InheritedStatsReadOnly -> localize(HttpStatusCode.Conflict, "campaign.creature.inherited-stats-read-only", locale)
+    CreatureError.ParticipantRequired -> localize(HttpStatusCode.Forbidden, "campaign.participant-required", locale)
+    is CreatureError.PlayerCharacterNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.player-character-not-found", locale, playerCharacterId)
+    CreatureError.PlayerCharacterOwnerRequired -> localize(HttpStatusCode.Forbidden, "campaign.creature.player-character-owner-required", locale)
+    CreatureError.BlankName -> localize(HttpStatusCode.BadRequest, "campaign.blank-name", locale)
+    CreatureError.BlankClassName -> localize(HttpStatusCode.BadRequest, "campaign.creature.blank-class-name", locale)
+    CreatureError.BlankBackgroundName -> localize(HttpStatusCode.BadRequest, "campaign.creature.blank-background-name", locale)
+    CreatureError.BlankSpeciesName -> localize(HttpStatusCode.BadRequest, "campaign.creature.blank-species-name", locale)
+    is CreatureError.AbilityScoreOutOfRange -> localize(HttpStatusCode.BadRequest, "campaign.creature.ability-score-out-of-range", locale, ability.name, min, max)
+    CreatureError.NegativeValue -> localize(HttpStatusCode.BadRequest, "campaign.creature.negative-value", locale)
+    is CreatureError.InvalidSheet -> localize(HttpStatusCode.BadRequest, "campaign.creature.invalid-${field.name.lowercase().replace('_', '-')}", locale)
 }
 
 fun LibraryError.localize(locale: Locale) = when (this) {
@@ -94,6 +105,9 @@ fun LibraryError.localize(locale: Locale) = when (this) {
     LibraryError.GameMasterRequired -> localize(HttpStatusCode.Forbidden, "campaign.game-master-required", locale)
     LibraryError.BlankTitle -> localize(HttpStatusCode.BadRequest, "campaign.library.blank-title", locale)
     is LibraryError.LibraryEntryNotFound -> localize(HttpStatusCode.NotFound, "campaign.library.entry-not-found", locale, libraryEntryId)
+    is LibraryError.PlayerCharacterNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.player-character-not-found", locale, playerCharacterId)
+    LibraryError.PlayerCharacterOwnerRequired -> localize(HttpStatusCode.Forbidden, "campaign.creature.player-character-owner-required", locale)
+    is LibraryError.JournalEntryNotFound -> localize(HttpStatusCode.NotFound, "campaign.library.journal-entry-not-found", locale, journalEntryId)
 }
 
 fun MediaError.localize(locale: Locale) = when (this) {

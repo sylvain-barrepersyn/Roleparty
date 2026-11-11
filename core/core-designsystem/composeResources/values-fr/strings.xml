@@ -5,4 +5,9 @@
     <string name="next_month">Mois suivant</string>
     <string name="bold">Gras</string>
     <string name="italic">Italique</string>
+    <string name="heading_1">Titre</string>
+    <string name="heading_2">Sous-titre</string>
+    <string name="bulleted_list">Liste à puces</string>
+    <string name="paragraph_text">Texte</string>
+    <string name="paragraph_handle">Glisser pour déplacer, cliquer pour changer le type</string>
 </resources>

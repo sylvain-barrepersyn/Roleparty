@@ -5,11 +5,7 @@ import app.roleparty.campaign.contract.web.CampaignCreationRequestBody
 import app.roleparty.campaign.contract.web.CampaignJoinedResponseBody
 import app.roleparty.campaign.contract.web.CampaignJoiningRequestBody
 import app.roleparty.campaign.contract.web.CampaignsResource
-import app.roleparty.campaign.contract.web.LevelUpRequestBody
 import app.roleparty.campaign.contract.web.Participation
-import app.roleparty.campaign.contract.web.PlayerCharacterCreatedResponseBody
-import app.roleparty.campaign.contract.web.PlayerCharacterCreationRequestBody
-import app.roleparty.campaign.contract.web.PlayerCharactersResource
 import app.roleparty.campaign.domain.CampaignModule
 import app.roleparty.campaign.domain.model.CampaignError
 import app.roleparty.campaign.domain.model.Invitation
@@ -26,6 +22,9 @@ import io.ktor.server.resources.post
 import io.ktor.server.resources.put
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
+import kotlin.time.Clock
 
 interface CampaignLocalization : ErrorResponder<CampaignError>
 
@@ -40,9 +39,10 @@ internal fun Route.campaignRoutes(campaign: CampaignModule, localization: Campai
 
         get<CampaignsResource> { resource ->
             val accountId = call.user().accountId
+            val today = resource.today ?: Clock.System.todayIn(TimeZone.UTC)
             val overviews = when (resource.participation) {
-                Participation.PLAYER -> campaign.findCampaigns.playedBy(accountId)
-                Participation.GAME_MASTER, null -> campaign.findCampaigns.masteredBy(accountId)
+                Participation.PLAYER -> campaign.findCampaigns.playedBy(accountId, today)
+                Participation.GAME_MASTER, null -> campaign.findCampaigns.masteredBy(accountId, today)
             }
             call.respond(overviews.map { it.toResponseBody() })
         }
@@ -66,31 +66,6 @@ internal fun Route.campaignRoutes(campaign: CampaignModule, localization: Campai
         get<CampaignsResource.Campaign.Invitations> { resource ->
             call.respondOutcome(campaign.inviteToCampaign.invitations(call.user().accountId, resource.parent.campaignId), localization) { invitations ->
                 invitations.map { it.toResponseBody() }
-            }
-        }
-
-        post<CampaignsResource.Campaign.PlayerCharacters> { resource ->
-            val creation = call.receive<PlayerCharacterCreationRequestBody>().toCreation(resource.parent.campaignId)
-                ?: return@post call.respond(HttpStatusCode.BadRequest)
-            call.respondOutcome(campaign.createPlayerCharacter(call.user().accountId, creation), localization, HttpStatusCode.Created) {
-                PlayerCharacterCreatedResponseBody(it)
-            }
-        }
-
-        get<CampaignsResource.Campaign.PlayerCharacters> { resource ->
-            call.respondOutcome(campaign.findPlayerCharacters.ofRequester(call.user().accountId, resource.parent.campaignId), localization) { overviews ->
-                overviews.map { it.toResponseBody() }
-            }
-        }
-
-        get<PlayerCharactersResource.PlayerCharacter> { resource ->
-            call.respondOutcome(campaign.findPlayerCharacters.byId(call.user().accountId, resource.playerCharacterId), localization) { it.toResponseBody() }
-        }
-
-        post<PlayerCharactersResource.PlayerCharacter.LevelUp> { resource ->
-            val body = call.receive<LevelUpRequestBody>()
-            call.respondOutcome(campaign.levelUpPlayerCharacter(call.user().accountId, resource.parent.playerCharacterId, body.characterClass.toCharacterClass()), localization) {
-                it.toResponseBody()
             }
         }
     }

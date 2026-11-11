@@ -1,7 +1,13 @@
 package app.roleparty.campaign.library.frontend.container.data
 
 import app.roleparty.campaign.commons.CampaignId
+import app.roleparty.campaign.creature.commons.PlayerCharacterId
+import app.roleparty.campaign.library.commons.JournalEntryId
 import app.roleparty.campaign.library.commons.LibraryEntryId
+import app.roleparty.campaign.library.contract.web.JournalEntryCreatedResponseBody
+import app.roleparty.campaign.library.contract.web.JournalEntryRequestBody
+import app.roleparty.campaign.library.contract.web.JournalEntryResponseBody
+import app.roleparty.campaign.library.contract.web.JournalResource
 import app.roleparty.campaign.library.contract.web.LibraryEntryCreatedResponseBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryCreationRequestBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryMetadataRequestBody
@@ -25,6 +31,12 @@ interface LibraryApi {
     suspend fun createEntry(campaignId: CampaignId, title: String, description: String, imageId: ImageId): Outcome<LibraryEntryId, BackendFailure>
 
     suspend fun changeEntryMetadata(campaignId: CampaignId, entryId: LibraryEntryId, title: String, description: String): Outcome<Unit, BackendFailure>
+
+    suspend fun journal(playerCharacterId: PlayerCharacterId): Outcome<List<JournalEntryResponseBody>, BackendFailure>
+
+    suspend fun createJournalEntry(playerCharacterId: PlayerCharacterId): Outcome<JournalEntryId, BackendFailure>
+
+    suspend fun updateJournalEntry(playerCharacterId: PlayerCharacterId, entry: JournalEntryResponseBody): Outcome<Unit, BackendFailure>
 }
 
 class HttpLibraryApi(private val client: HttpClient) : LibraryApi {
@@ -40,6 +52,19 @@ class HttpLibraryApi(private val client: HttpClient) : LibraryApi {
     override suspend fun changeEntryMetadata(campaignId: CampaignId, entryId: LibraryEntryId, title: String, description: String) =
         backendCall<Unit> {
             client.put(LibraryResource.Entry.Metadata(entryOf(campaignId, entryId))) { jsonBody(LibraryEntryMetadataRequestBody(title, description)) }
+        }
+
+    override suspend fun journal(playerCharacterId: PlayerCharacterId) =
+        backendCall<List<JournalEntryResponseBody>> { client.get(JournalResource(playerCharacterId)) }
+
+    override suspend fun createJournalEntry(playerCharacterId: PlayerCharacterId) =
+        backendCall<JournalEntryCreatedResponseBody> { client.post(JournalResource(playerCharacterId)) }.map { it.id }
+
+    override suspend fun updateJournalEntry(playerCharacterId: PlayerCharacterId, entry: JournalEntryResponseBody) =
+        backendCall<Unit> {
+            client.put(JournalResource.Entry(JournalResource(playerCharacterId), entry.id)) {
+                jsonBody(JournalEntryRequestBody(entry.title, entry.text, entry.images))
+            }
         }
 
     private fun entryOf(campaignId: CampaignId, entryId: LibraryEntryId) = LibraryResource.Entry(LibraryResource(campaignId), entryId)

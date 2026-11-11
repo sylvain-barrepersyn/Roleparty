@@ -15,6 +15,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
+import kotlinx.datetime.LocalDate
 import io.ktor.client.engine.cio.CIO
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -23,6 +24,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.queryString
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -45,7 +47,7 @@ class HttpCampaignApiTest : FunSpec() {
         install(ContentNegotiation) { json() }
         routing {
             get("/v1/campaigns") {
-                received += "participation=${call.request.queryParameters["participation"]}"
+                received += call.request.queryString()
                 call.respond(listOf(overview))
             }
             post("/v1/campaigns") {
@@ -72,8 +74,8 @@ class HttpCampaignApiTest : FunSpec() {
         }
 
         test("campaigns should be listed by participation") {
-            api.campaigns(Participation.PLAYER).shouldBeSuccess() shouldBe listOf(overview)
-            received shouldContainExactly listOf("participation=PLAYER")
+            api.campaigns(Participation.PLAYER, LocalDate(2026, 11, 9)).shouldBeSuccess() shouldBe listOf(overview)
+            received shouldContainExactly listOf("participation=PLAYER&today=2026-11-09")
         }
 
         test("a campaign should be created from its body, answering its identifier") {

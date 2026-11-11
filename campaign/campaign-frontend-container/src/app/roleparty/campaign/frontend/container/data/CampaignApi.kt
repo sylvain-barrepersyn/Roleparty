@@ -21,10 +21,11 @@ import io.ktor.client.plugins.resources.delete
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.plugins.resources.put
+import kotlinx.datetime.LocalDate
 
 interface CampaignApi {
 
-    suspend fun campaigns(participation: Participation): Outcome<List<CampaignOverviewResponseBody>, BackendFailure>
+    suspend fun campaigns(participation: Participation, today: LocalDate): Outcome<List<CampaignOverviewResponseBody>, BackendFailure>
 
     suspend fun campaign(campaignId: CampaignId): Outcome<CampaignResponseBody, BackendFailure>
 
@@ -39,8 +40,8 @@ interface CampaignApi {
 
 class HttpCampaignApi(private val client: HttpClient) : CampaignApi {
 
-    override suspend fun campaigns(participation: Participation) =
-        backendCall<List<CampaignOverviewResponseBody>> { client.get(CampaignsResource(participation)) }
+    override suspend fun campaigns(participation: Participation, today: LocalDate) =
+        backendCall<List<CampaignOverviewResponseBody>> { client.get(CampaignsResource(participation, today)) }
 
     override suspend fun campaign(campaignId: CampaignId) =
         backendCall<CampaignResponseBody> { client.get(campaignOf(campaignId)) }

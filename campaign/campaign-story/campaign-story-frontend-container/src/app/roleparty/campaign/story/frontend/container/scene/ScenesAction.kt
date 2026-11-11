@@ -1,5 +1,6 @@
 package app.roleparty.campaign.story.frontend.container.scene
 
+import app.roleparty.core.document.Document
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.story.commons.SceneId
 import app.roleparty.core.frontend.container.ViewModelAction
@@ -14,7 +15,7 @@ sealed interface ScenesAction : ViewModelAction {
 
     data class ChangeName(val name: String) : ScenesAction
 
-    data class ChangeDescription(val description: String) : ScenesAction
+    data class ChangeDescription(val description: Document) : ScenesAction
 
     data object Delete : ScenesAction
 

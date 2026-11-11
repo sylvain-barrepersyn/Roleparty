@@ -1,11 +1,16 @@
 package app.roleparty.campaign.library.infrastructure.adapter.primary
 
+import app.roleparty.campaign.library.contract.web.JournalEntryCreatedResponseBody
+import app.roleparty.campaign.library.contract.web.JournalEntryRequestBody
+import app.roleparty.campaign.library.contract.web.JournalEntryResponseBody
+import app.roleparty.campaign.library.contract.web.JournalResource
 import app.roleparty.campaign.library.contract.web.LibraryEntryCreatedResponseBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryCreationRequestBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryMetadataRequestBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryResponseBody
 import app.roleparty.campaign.library.contract.web.LibraryResource
 import app.roleparty.campaign.library.domain.LibraryModule
+import app.roleparty.campaign.library.domain.model.JournalEntry
 import app.roleparty.campaign.library.domain.model.LibraryEntry
 import app.roleparty.campaign.library.domain.model.LibraryError
 import app.roleparty.core.ktor.rest.ErrorResponder
@@ -43,7 +48,26 @@ internal fun Route.libraryRoutes(library: LibraryModule, localization: LibraryLo
             call.respondStatus(library.changeLibraryEntryMetadata(call.user().accountId, entry.parent.campaignId, entry.entryId, metadata), localization)
         }
 
+        post<JournalResource> { resource ->
+            call.respondOutcome(library.createJournalEntry(call.user().accountId, resource.playerCharacterId), localization, HttpStatusCode.Created) {
+                JournalEntryCreatedResponseBody(it)
+            }
+        }
+
+        get<JournalResource> { resource ->
+            call.respondOutcome(library.findJournalEntries.ofPlayerCharacter(call.user().accountId, resource.playerCharacterId), localization) { entries ->
+                entries.map { it.toResponseBody() }
+            }
+        }
+
+        put<JournalResource.Entry> { resource ->
+            val body = call.receive<JournalEntryRequestBody>()
+            val content = JournalEntry.Content(body.title, body.text, body.images)
+            call.respondStatus(library.updateJournalEntry(call.user().accountId, resource.parent.playerCharacterId, resource.entryId, content), localization)
+        }
     }
 }
 
 private fun LibraryEntry.toResponseBody() = LibraryEntryResponseBody(id, metadata.title, metadata.description, image)
+
+private fun JournalEntry.toResponseBody() = JournalEntryResponseBody(id, content.title, content.text, content.images)

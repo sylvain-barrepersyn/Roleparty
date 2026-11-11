@@ -93,7 +93,7 @@ fun Field(
 }
 
 @Composable
-private fun FieldLabel(
+internal fun FieldLabel(
     label: String,
     icon: IconVector?,
     enabled: Boolean,

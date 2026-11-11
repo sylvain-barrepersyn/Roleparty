@@ -45,6 +45,7 @@ class HttpSecurityClientTest : FunSpec() {
         routing {
             post("/v1/sign-in") { call.respondText(signInBody, ContentType.Application.Json, signInStatus) }
             post("/v1/refresh") { call.respondText(refreshBody, ContentType.Application.Json, refreshStatus) }
+            get("/whoami") { call.respondText(call.request.header(HttpHeaders.Authorization).orEmpty()) }
             get("/protected") {
                 if (call.request.header(HttpHeaders.Authorization) == "Bearer $validAccessToken") call.respondText("secret")
                 else call.respond(HttpStatusCode.Unauthorized)
@@ -91,6 +92,23 @@ class HttpSecurityClientTest : FunSpec() {
 
             // When / Then
             unreachable.signIn("gimli@roleparty.app", "a-valid-password") shouldBeFailure SecurityFailure.Unreachable
+        }
+
+        test("should send the token of the current session, even after another account signed in") {
+            // Given
+            val store = InMemorySessionStore(StoredSession("first-access", "first-refresh"))
+            val client = HttpClient(CIO) {
+                expectSuccess = false
+                installApplicationAuthentication(api, store) { error("The session is still valid") }
+            }
+            client.get("http://localhost:$port/whoami").bodyAsText() shouldBe "Bearer first-access"
+
+            // When
+            store.session = StoredSession("second-access", "second-refresh")
+
+            // Then
+            client.get("http://localhost:$port/whoami").bodyAsText() shouldBe "Bearer second-access"
+            client.close()
         }
 
         test("should refresh an expired access token once and retry the request") {

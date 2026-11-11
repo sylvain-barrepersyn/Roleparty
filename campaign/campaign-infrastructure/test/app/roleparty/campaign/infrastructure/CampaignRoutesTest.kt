@@ -1,22 +1,11 @@
 package app.roleparty.campaign.infrastructure
 
 import app.roleparty.account.commons.AccountId
-import app.roleparty.campaign.contract.web.AbilityScoresBody
-import app.roleparty.campaign.contract.web.AlignmentName
-import app.roleparty.campaign.contract.web.BackgroundName
 import app.roleparty.campaign.contract.web.CampaignCreatedResponseBody
 import app.roleparty.campaign.contract.web.CampaignCreationRequestBody
 import app.roleparty.campaign.contract.web.CampaignJoiningRequestBody
 import app.roleparty.campaign.contract.web.CampaignOverviewResponseBody
 import app.roleparty.campaign.contract.web.InvitationResponseBody
-import app.roleparty.campaign.contract.web.LanguageName
-import app.roleparty.campaign.contract.web.LevelUpRequestBody
-import app.roleparty.campaign.contract.web.PlayableClassName
-import app.roleparty.campaign.contract.web.PlayerCharacterCreatedResponseBody
-import app.roleparty.campaign.contract.web.PlayerCharacterCreationRequestBody
-import app.roleparty.campaign.contract.web.PlayerCharacterResponseBody
-import app.roleparty.campaign.contract.web.SkillName
-import app.roleparty.campaign.contract.web.SpeciesName
 import app.roleparty.campaign.domain.model.CampaignError
 import app.roleparty.campaign.infrastructure.adapter.primary.CampaignLocalization
 import app.roleparty.campaign.test.CampaignFixture
@@ -52,6 +41,7 @@ import kotlin.io.encoding.Base64
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaInstant
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.json.Json
 
 class CampaignRoutesTest : FunSpec({
@@ -79,13 +69,14 @@ class CampaignRoutesTest : FunSpec({
         }
     }
 
-    fun ApplicationTestBuilder.campaigns() {
+    fun ApplicationTestBuilder.campaigns(): CampaignFixture {
         val fixtures = CampaignFixture()
         application {
             install(ContentNegotiation) { json() }
             installAuthentication(mapOf("JWT_PUBLIC_KEY" to Base64.encode(publicKey.encoded)))
             serveCampaignRoutes(fixtures.module, localization)
         }
+        return fixtures
     }
 
     suspend fun HttpClient.postJson(path: String, accountId: AccountId, body: String): HttpResponse = post(path) {
@@ -96,7 +87,25 @@ class CampaignRoutesTest : FunSpec({
 
     suspend fun HttpClient.getAs(path: String, accountId: AccountId) = get(path) { bearerAuth(tokenOf(accountId)) }
 
-    test("a game master should create a campaign that a player joins with an invitation code, then creates and levels up a character") {
+    test("campaigns should be listed with their next game session from the given day, nearest first") {
+        testApplication {
+            val fixtures = campaigns()
+            val gameMaster = AccountId.generate()
+            val unscheduled = fixtures.`given a campaign named`("Lost Mine", gameMaster)
+            val scheduled = fixtures.`given a campaign named`("Tomb of Annihilation", gameMaster)
+            fixtures.`given a game session of`(scheduled, LocalDate(2026, 11, 8))
+            fixtures.`given a game session of`(scheduled, LocalDate(2026, 11, 12))
+
+            val response = client.getAs("/v1/campaigns?participation=GAME_MASTER&today=2026-11-09", gameMaster)
+
+            json.decodeFromString<List<CampaignOverviewResponseBody>>(response.bodyAsText()).map { it.id to it.nextSession } shouldBe listOf(
+                scheduled to LocalDate(2026, 11, 12),
+                unscheduled to null,
+            )
+        }
+    }
+
+    test("a game master should create a campaign that a player joins with an invitation code") {
         testApplication {
             campaigns()
             val gameMaster = AccountId.generate()
@@ -113,31 +122,6 @@ class CampaignRoutesTest : FunSpec({
             client.postJson("/v1/campaigns/join", player, json.encodeToString(CampaignJoiningRequestBody(code))).status shouldBe HttpStatusCode.OK
             val played = json.decodeFromString<List<CampaignOverviewResponseBody>>(client.getAs("/v1/campaigns?participation=PLAYER", player).bodyAsText())
             played.map { it.id } shouldBe listOf(campaignId)
-
-            val creation = PlayerCharacterCreationRequestBody(
-                name = "Gimli",
-                imageId = ImageId.generate(),
-                characterClass = PlayableClassName.FIGHTER,
-                species = SpeciesName.DWARF,
-                background = BackgroundName.ARTISAN,
-                backgroundTool = "SMITHS_TOOLS",
-                alignment = AlignmentName.LAWFUL_GOOD,
-                abilityScores = AbilityScoresBody(15, 13, 14, 10, 12, 8),
-                appearance = "",
-                backstory = "",
-                skills = setOf(SkillName.ATHLETICS, SkillName.PERCEPTION),
-                languages = setOf(LanguageName.COMMON, LanguageName.DWARVISH),
-            )
-            val character = client.postJson("/v1/campaigns/$campaignId/player-characters", player, json.encodeToString(creation))
-            character.status shouldBe HttpStatusCode.Created
-            val characterId = json.decodeFromString<PlayerCharacterCreatedResponseBody>(character.bodyAsText()).id
-
-            val leveledUp = client.postJson("/v1/player-characters/$characterId/level-up", player, json.encodeToString(LevelUpRequestBody(PlayableClassName.FIGHTER)))
-            leveledUp.status shouldBe HttpStatusCode.OK
-            val sheet = json.decodeFromString<PlayerCharacterResponseBody>(leveledUp.bodyAsText())
-            sheet.level shouldBe 2
-            sheet.backgroundTool shouldBe "SMITHS_TOOLS"
-            sheet.skills shouldBe setOf(SkillName.ATHLETICS, SkillName.PERCEPTION, SkillName.INVESTIGATION, SkillName.PERSUASION)
         }
     }
 
@@ -147,21 +131,6 @@ class CampaignRoutesTest : FunSpec({
 
             client.get("/v1/campaigns").status shouldBe HttpStatusCode.Unauthorized
             client.getAs("/v1/campaigns/not-an-id", AccountId.generate()).status shouldBe HttpStatusCode.BadRequest
-        }
-    }
-
-    test("a background tool that does not fit the background should be refused") {
-        testApplication {
-            campaigns()
-            val gameMaster = AccountId.generate()
-            val created = client.postJson("/v1/campaigns", gameMaster, json.encodeToString(CampaignCreationRequestBody("The Lost Mine", "", ImageId.generate())))
-            val campaignId = json.decodeFromString<CampaignCreatedResponseBody>(created.bodyAsText()).id
-
-            val body = """{"name":"Gimli","imageId":"${ImageId.generate()}","characterClass":"FIGHTER","species":"DWARF","background":"ARTISAN",
-                |"backgroundTool":"PAN_FLUTE","alignment":"NEUTRAL","abilityScores":{"strength":10,"dexterity":10,"constitution":10,"intelligence":10,"wisdom":10,"charisma":10},
-                |"appearance":"","backstory":"","skills":["ATHLETICS","STEALTH"],"languages":["COMMON"]}""".trimMargin()
-
-            client.postJson("/v1/campaigns/$campaignId/player-characters", gameMaster, body).status shouldBe HttpStatusCode.BadRequest
         }
     }
 })

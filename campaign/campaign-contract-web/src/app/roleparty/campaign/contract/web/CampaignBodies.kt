@@ -3,6 +3,7 @@ package app.roleparty.campaign.contract.web
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.media.commons.ImageId
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +16,7 @@ data class CampaignCreationRequestBody(val name: String, val description: String
 data class CampaignCreatedResponseBody(val id: CampaignId)
 
 @Serializable
-data class CampaignOverviewResponseBody(val id: CampaignId, val name: String, val imageId: ImageId, val players: Int)
+data class CampaignOverviewResponseBody(val id: CampaignId, val name: String, val imageId: ImageId, val players: Int, val nextSession: LocalDate? = null)
 
 @Serializable
 data class CampaignResponseBody(

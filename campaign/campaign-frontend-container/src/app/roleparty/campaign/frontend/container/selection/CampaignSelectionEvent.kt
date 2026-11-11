@@ -7,6 +7,8 @@ sealed interface CampaignSelectionEvent : ViewModelEvent {
 
     data class MasteredCampaignOpened(val campaignId: CampaignId) : CampaignSelectionEvent
 
+    data class PlayedCampaignOpened(val campaignId: CampaignId) : CampaignSelectionEvent
+
     data object CampaignCreationRequested : CampaignSelectionEvent
 
     data object CampaignJoiningRequested : CampaignSelectionEvent

@@ -5,5 +5,5 @@ import app.roleparty.campaign.creature.test.CampaignsContractSubject
 import app.roleparty.campaign.creature.test.CampaignsContractTest
 
 class InfrastructuredCampaignsContractTest : CampaignsContractTest({
-    CampaignsContractSubject(InfrastructuredCampaigns(TestPostgres.database)) { TestPostgres.givenCampaign(it) }
+    CampaignsContractSubject(InfrastructuredCampaigns(TestPostgres.database)) { gameMaster, players -> TestPostgres.givenCampaign(gameMaster, players) }
 })

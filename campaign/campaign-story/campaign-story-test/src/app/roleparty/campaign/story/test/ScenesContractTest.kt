@@ -23,7 +23,7 @@ abstract class ScenesContractTest(createSubject: () -> ScenesContractSubject) : 
     init {
         Given("a scene of a campaign") {
             val campaignId = subject.givenCampaign()
-            val scene = Scene(SceneId.generate(), campaignId, "Ambush", "Goblins attack.")
+            val scene = Scene(SceneId.generate(), campaignId, "Ambush", document("Goblins attack."))
             scenes.save(scene)
 
             Then("it should be found and listed by campaign") {

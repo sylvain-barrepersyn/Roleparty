@@ -132,6 +132,8 @@ Expose the backend over HTTPS only, as passwords and tokens travel in its reques
 
 The application uses `ROLEPARTY_BACKEND_URL`, which defaults to `http://localhost:8080`. Set it to your backend's HTTPS address wherever the application runs.
 
+The installed application doesn't need it: its address comes from `roleparty.backend.url` in `conveyor.conf`.
+
 ### 5. Check the deployment
 
 - The logs must not contain `Account RPC is unreachable` after startup, which means `ACCOUNT_RPC_URL` or `ACCOUNT_RPC_TOKEN` is wrong.
@@ -144,3 +146,45 @@ The application uses `ROLEPARTY_BACKEND_URL`, which defaults to `http://localhos
 3. Remove `JWT_PREVIOUS_PUBLIC_KEY` after 15 minutes, once tokens signed with the old key have expired.
 
 Users stay signed in throughout.
+
+## Release pipeline
+
+Every push to `main` runs `.github/workflows/pipeline.yaml`: build, tests, then a version tag computed from the commits added since the previous tag.
+
+| Commit | Version | Released |
+|---|---|---|
+| `type!:`, `break:` or a `BREAKING CHANGE:` footer | `x` + 1 | backend and desktop application |
+| `feat:` | `y` + 1 | backend and desktop application |
+| `fix:`, `refactor:`, `style:`, `perf:` | `z` + 1 | tag only |
+| anything else (`chore:`, `docs:`, `test:`...) | unchanged | nothing |
+
+A release builds the backend image, pushes it to `ghcr.io/sylvain-barrepersyn/roleparty-backend`, and restarts it on the server with `[environment]/production/docker-compose.yaml`. Once the backend is up, [Conveyor](https://conveyor.hydraulic.dev) packages the desktop application for Windows, macOS and Linux and publishes it as the latest GitHub release. Installed applications update themselves from it when they start, and the download page is `https://sylvain-barrepersyn.github.io/Roleparty/download.html`.
+
+### Set up the server once
+
+In the directory the pipeline deploys to:
+
+1. Copy `[environment]/production/example.env` as `.env` and fill it in. `MONITOR_USERS` is the output of `htpasswd -nB <user>`.
+2. Put the files generated in [Generate the secrets](#1-generate-the-secrets) in `secrets/`: `jwt-private.pem`, `jwt-public.pem`, `account-rpc-token.txt` and `media-rpc-token.txt`.
+3. Allow a dedicated SSH key to sign in, for a user in the `docker` group.
+
+### Set up the repository once
+
+| Secret | Description |
+|---|---|
+| `DEPLOY_HOST`, `DEPLOY_USER` | SSH host and user of the server |
+| `DEPLOY_PORT` | SSH port, `22` if not set |
+| `DEPLOY_PATH` | Absolute path of the deployment directory on the server |
+| `DEPLOY_SSH_KEY` | Private key allowed to sign in |
+| `DEPLOY_KNOWN_HOSTS` | Output of `ssh-keyscan -p <port> <host>` |
+| `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET` | Optional. When set, the pipeline joins your Tailscale network as `tag:ci` before SSH, so the SSH port doesn't need to be open to the internet |
+| `SIGNING_KEY` | Conveyor root key: run `conveyor keys generate` once and copy the `app.signing-key` value it writes |
+
+Turn on GitHub Pages for the `gh-pages` branch after the first release.
+
+### Package the desktop application locally
+
+```sh
+eval "$(.github/scripts/prepare-conveyor-inputs.sh | grep '^SKIKO_VERSION=' | sed 's/^/export /')"
+conveyor make site
+```

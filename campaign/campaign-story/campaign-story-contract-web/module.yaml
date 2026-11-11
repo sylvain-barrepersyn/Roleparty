@@ -5,4 +5,5 @@ apply:
 
 dependencies:
   - //campaign/campaign-story/campaign-story-commons: exported
+  - //core/core-document: exported
   - //campaign/campaign-library/campaign-library-commons: exported

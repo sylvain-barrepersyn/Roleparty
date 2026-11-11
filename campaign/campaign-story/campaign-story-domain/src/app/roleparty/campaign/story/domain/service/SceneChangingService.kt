@@ -1,5 +1,6 @@
 package app.roleparty.campaign.story.domain.service
 
+import app.roleparty.core.document.Document
 import app.roleparty.account.commons.AccountId
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.campaign.story.commons.SceneId
@@ -13,13 +14,13 @@ internal class SceneChangingService(
     private val gameMaster: GameMasterCheckingService,
 ) : ChangeScene {
 
-    override suspend fun invoke(requester: AccountId, campaignId: CampaignId, sceneId: SceneId, name: String, description: String): Outcome<Unit, StoryError> {
+    override suspend fun invoke(requester: AccountId, campaignId: CampaignId, sceneId: SceneId, name: String, description: Document): Outcome<Unit, StoryError> {
         gameMaster.check(requester, campaignId)?.let { return Outcome.Failure(it) }
 
         val scene = scenes.findById(sceneId)?.takeIf { it.campaignId == campaignId } ?: return Outcome.Failure(StoryError.SceneNotFound(sceneId))
         if (name.isBlank()) return Outcome.Failure(StoryError.BlankName)
 
-        scenes.save(scene.copy(name = name.trim(), description = description.trim()))
+        scenes.save(scene.copy(name = name.trim(), description = Document.from(description.paragraphs)))
         return Outcome.success()
     }
 }

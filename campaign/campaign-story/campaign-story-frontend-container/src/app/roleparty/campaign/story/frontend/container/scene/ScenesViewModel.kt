@@ -7,6 +7,7 @@ import app.roleparty.campaign.story.commons.SceneId
 import app.roleparty.campaign.story.contract.web.SceneResponseBody
 import app.roleparty.campaign.story.frontend.container.data.StoryApi
 import app.roleparty.core.commons.Outcome
+import app.roleparty.core.document.Document
 import app.roleparty.core.frontend.container.Debouncer
 import app.roleparty.core.frontend.container.ViewModel
 import app.roleparty.core.ktor.client.BackendFailure
@@ -58,9 +59,9 @@ class ScenesViewModel(private val api: StoryApi, private val campaignId: Campaig
     private fun create(name: String) {
         if (state.value !is ScenesState.Loaded) return
         viewModelScope.launch {
-            when (val outcome = api.createScene(campaignId, name, "")) {
+            when (val outcome = api.createScene(campaignId, name, Document.EMPTY)) {
                 is Outcome.Success -> loaded {
-                    copy(scenes = scenes + SceneResponseBody(outcome.value, name, "", emptyList()), selectedId = outcome.value, failure = null)
+                    copy(scenes = scenes + SceneResponseBody(outcome.value, name, Document.EMPTY, emptyList()), selectedId = outcome.value, failure = null)
                 }
                 is Outcome.Failure -> fail(outcome.error)
             }

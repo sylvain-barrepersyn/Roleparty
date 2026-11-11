@@ -10,7 +10,7 @@ sealed interface CampaignSelectionAction : ViewModelAction {
 
     data object Refresh : CampaignSelectionAction
 
-    data class OpenMasteredCampaign(val campaignId: CampaignId) : CampaignSelectionAction
+    data class OpenCampaign(val campaignId: CampaignId) : CampaignSelectionAction
 
     data object CreateCampaign : CampaignSelectionAction
 

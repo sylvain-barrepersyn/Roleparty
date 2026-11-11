@@ -1,12 +1,16 @@
 package app.roleparty.campaign.infrastructure
 
+import app.roleparty.campaign.agenda.commons.GameSessionId
+import app.roleparty.campaign.database.GameSessionTable
 import app.roleparty.campaign.database.setUpCampaignSchema
 import app.roleparty.campaign.infrastructure.adapter.secondary.InfrastructuredCampaigns
+import app.roleparty.campaign.infrastructure.adapter.secondary.InfrastructuredGameSessions
 import app.roleparty.campaign.infrastructure.adapter.secondary.InfrastructuredInvitations
-import app.roleparty.campaign.infrastructure.adapter.secondary.InfrastructuredPlayerCharacters
 import app.roleparty.campaign.test.CampaignStores
 import app.roleparty.core.database.connectPostgres
 import kotlin.time.Clock
+import org.jetbrains.exposed.v1.r2dbc.insert
+import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import org.testcontainers.postgresql.PostgreSQLContainer
 
 internal object TestPostgres {
@@ -30,7 +34,16 @@ internal object TestPostgres {
     fun stores() = CampaignStores(
         campaigns = InfrastructuredCampaigns(database, Clock.System),
         invitations = InfrastructuredInvitations(database),
-        playerCharacters = InfrastructuredPlayerCharacters(database),
+        gameSessions = InfrastructuredGameSessions(database),
+        scheduleGameSession = { campaignId, date ->
+            suspendTransaction(database) {
+                GameSessionTable.insert {
+                    it[id] = GameSessionId.generate()
+                    it[GameSessionTable.campaignId] = campaignId
+                    it[GameSessionTable.date] = date
+                }
+            }
+        },
     )
 
     fun sql(query: String): List<String> =

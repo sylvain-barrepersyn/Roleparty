@@ -14,6 +14,7 @@ import app.roleparty.campaign.frontend.container.selection.CampaignSelectionEven
 import app.roleparty.campaign.frontend.container.selection.CampaignSelectionState
 import app.roleparty.campaign.frontend.container.selection.CampaignSelectionViewModel
 import app.roleparty.core.ktor.client.BackendFailure
+import app.roleparty.core.test.ControlledClock
 import app.roleparty.media.commons.ImageId
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -24,32 +25,39 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CampaignOnboardingViewModelsTest : FunSpec({
 
+    val today = LocalDate(2026, 11, 10)
+    val clock = ControlledClock(LocalDateTime(2026, 11, 9, 23, 30).toInstant(TimeZone.UTC))
+
     beforeTest { Dispatchers.setMain(UnconfinedTestDispatcher()) }
     afterTest { Dispatchers.resetMain() }
 
-    test("the selection should load the mastered campaigns, then the played ones on demand") {
+    test("the selection should load the mastered campaigns, then the played ones on demand, from the local day") {
         val api = FakeCampaignApi()
-        val viewModel = CampaignSelectionViewModel(api)
+        val viewModel = CampaignSelectionViewModel(api, clock, TimeZone.of("Europe/Paris"))
 
         viewModel.handle(CampaignSelectionAction.Refresh)
-        viewModel.state.value shouldBe CampaignSelectionState.Loaded(Participation.GAME_MASTER, api.mastered)
+        viewModel.state.value shouldBe CampaignSelectionState.Loaded(Participation.GAME_MASTER, api.mastered, today)
 
         viewModel.handle(CampaignSelectionAction.ShowParticipation(Participation.PLAYER))
-        viewModel.state.value shouldBe CampaignSelectionState.Loaded(Participation.PLAYER, api.played)
-        api.calls shouldContainExactly listOf("campaigns GAME_MASTER", "campaigns PLAYER")
+        viewModel.state.value shouldBe CampaignSelectionState.Loaded(Participation.PLAYER, api.played, today)
+        api.calls shouldContainExactly listOf("campaigns GAME_MASTER $today", "campaigns PLAYER $today")
     }
 
     test("the selection should show a failure and report the requested navigations") {
         val api = FakeCampaignApi().apply { failure = BackendFailure.Unreachable }
-        val viewModel = CampaignSelectionViewModel(api)
+        val viewModel = CampaignSelectionViewModel(api, clock)
         val events = viewModel.recordedEvents()
 
         viewModel.handle(CampaignSelectionAction.Refresh)
-        viewModel.handle(CampaignSelectionAction.OpenMasteredCampaign(api.campaignId))
+        viewModel.handle(CampaignSelectionAction.OpenCampaign(api.campaignId))
         viewModel.handle(CampaignSelectionAction.CreateCampaign)
         viewModel.handle(CampaignSelectionAction.JoinCampaign)
 
@@ -59,6 +67,17 @@ class CampaignOnboardingViewModelsTest : FunSpec({
             CampaignSelectionEvent.CampaignCreationRequested,
             CampaignSelectionEvent.CampaignJoiningRequested,
         )
+    }
+
+    test("a campaign opened from the player tab should be opened as played") {
+        val api = FakeCampaignApi()
+        val viewModel = CampaignSelectionViewModel(api, clock)
+        val events = viewModel.recordedEvents()
+
+        viewModel.handle(CampaignSelectionAction.ShowParticipation(Participation.PLAYER))
+        viewModel.handle(CampaignSelectionAction.OpenCampaign(api.campaignId))
+
+        events shouldContainExactly listOf(CampaignSelectionEvent.PlayedCampaignOpened(api.campaignId))
     }
 
     test("a campaign should only be created once named and illustrated") {

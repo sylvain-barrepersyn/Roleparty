@@ -1,6 +1,8 @@
 package app.roleparty.campaign.library.infrastructure
 
 import app.roleparty.account.commons.AccountId
+import app.roleparty.campaign.library.contract.web.JournalEntryCreatedResponseBody
+import app.roleparty.campaign.library.contract.web.JournalEntryResponseBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryCreatedResponseBody
 import app.roleparty.campaign.library.contract.web.LibraryEntryResponseBody
 import app.roleparty.campaign.library.domain.model.LibraryError
@@ -56,8 +58,9 @@ class LibraryRoutesTest : FunSpec({
 
     val localization = object : LibraryLocalization {
         override suspend fun respond(call: ApplicationCall, error: LibraryError) = when (error) {
-            LibraryError.GameMasterRequired -> call.respond(HttpStatusCode.Forbidden)
-            is LibraryError.LibraryEntryNotFound, is LibraryError.CampaignNotFound -> call.respond(HttpStatusCode.NotFound)
+            LibraryError.GameMasterRequired, LibraryError.PlayerCharacterOwnerRequired -> call.respond(HttpStatusCode.Forbidden)
+            is LibraryError.LibraryEntryNotFound, is LibraryError.CampaignNotFound, is LibraryError.PlayerCharacterNotFound,
+            is LibraryError.JournalEntryNotFound -> call.respond(HttpStatusCode.NotFound)
             LibraryError.BlankTitle -> call.respond(HttpStatusCode.BadRequest)
         }
     }
@@ -97,6 +100,37 @@ class LibraryRoutesTest : FunSpec({
             val listed = client.get("/v1/campaigns/$campaignId/library") { bearerAuth(tokenOf(gameMaster)) }
             Json.decodeFromString<List<LibraryEntryResponseBody>>(listed.bodyAsText()) shouldBe
                 listOf(LibraryEntryResponseBody(id, "Deep cave", "Darker.", imageId))
+        }
+    }
+
+    test("a player should add a journal entry to their character, write it with images, and keep it private") {
+        testApplication {
+            val fixtures = LibraryFixture()
+            val player = AccountId.generate()
+            val playerCharacterId = fixtures.`given a player character`(player)
+            val image = ImageId.generate()
+            application {
+                install(ContentNegotiation) { json() }
+                installAuthentication(mapOf("JWT_PUBLIC_KEY" to Base64.encode(publicKey.encoded)))
+                serveLibraryRoutes(fixtures.module, localization)
+            }
+
+            val created = client.post("/v1/player-characters/$playerCharacterId/journal") { bearerAuth(tokenOf(player)) }
+            created.status shouldBe HttpStatusCode.Created
+            val id = Json.decodeFromString<JournalEntryCreatedResponseBody>(created.bodyAsText()).id
+
+            client.put("/v1/player-characters/$playerCharacterId/journal/$id") {
+                bearerAuth(tokenOf(player))
+                contentType(ContentType.Application.Json)
+                setBody("""{"title":"Day 1","text":"# Barovia","images":["$image"]}""")
+            }.status shouldBe HttpStatusCode.NoContent
+
+            val listed = client.get("/v1/player-characters/$playerCharacterId/journal") { bearerAuth(tokenOf(player)) }
+            Json.decodeFromString<List<JournalEntryResponseBody>>(listed.bodyAsText()) shouldBe
+                listOf(JournalEntryResponseBody(id, "Day 1", "# Barovia", listOf(image)))
+
+            client.get("/v1/player-characters/$playerCharacterId/journal") { bearerAuth(tokenOf(AccountId.generate())) }.status shouldBe
+                HttpStatusCode.Forbidden
         }
     }
 })
