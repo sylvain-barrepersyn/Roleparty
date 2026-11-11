@@ -110,7 +110,7 @@ jobs:
               && docker login ghcr.io -u '$REGISTRY_USER' --password-stdin \
               && export ROLEPARTY_VERSION='$VERSION' \
               && docker compose pull backend \
-              && docker compose up -d --wait --remove-orphans; \
+              && docker compose up -d --wait --wait-timeout 600 --remove-orphans; \
             status=\$?; docker logout ghcr.io; exit \$status" <<<"$REGISTRY_TOKEN"
 
   desktop:

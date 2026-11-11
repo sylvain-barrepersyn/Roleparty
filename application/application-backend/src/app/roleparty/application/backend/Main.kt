@@ -80,7 +80,7 @@ fun Application.backend(env: Map<String, String>, emailSender: EmailSender) {
 }
 
 private fun Application.alertOnDeadLetters(rabbitMq: RabbitMq, emailSender: EmailSender, env: Map<String, String>) {
-    val recipient = env.valueOrFile(ALERT_EMAIL_ADDRESS)?.let(EmailAddress::from)
+    val recipient = env.valueOrFile(ALERT_EMAIL_ADDRESS)?.takeIf(String::isNotBlank)?.let(EmailAddress::from)
 
     monitorDeadLetters(rabbitMq) { queue, messages ->
         if (recipient != null) {

@@ -65,6 +65,12 @@ services:
       - jwt_public_key
       - account_rpc_token
       - media_rpc_token
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "</dev/tcp/localhost/8080" ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 120s
     restart: unless-stopped
 
   postgres:
@@ -94,10 +100,14 @@ services:
       - "rabbitmq:/var/lib/rabbitmq"
     networks:
       - internal
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-      interval: 10s
-      timeout: 5s
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity" ]
+      interval: 30s
+      timeout: 30s
       retries: 5
       start_period: 120s
     restart: unless-stopped
