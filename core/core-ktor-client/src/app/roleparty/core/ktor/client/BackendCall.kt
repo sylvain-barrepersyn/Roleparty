@@ -7,6 +7,8 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.resources.Resources
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.pingInterval
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
@@ -14,9 +16,12 @@ import io.ktor.serialization.ContentConvertException
 import io.ktor.serialization.kotlinx.json.json
 import java.io.IOException
 import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+
+private val WEB_SOCKET_PING = 15.seconds
 
 sealed interface BackendFailure {
 
@@ -31,6 +36,7 @@ fun HttpClientConfig<*>.installBackend(baseUrl: String) {
     expectSuccess = false
     install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
     install(Resources)
+    install(WebSockets) { pingInterval = WEB_SOCKET_PING }
     defaultRequest {
         url(baseUrl)
         headers.append(HttpHeaders.AcceptLanguage, Locale.getDefault().language)

@@ -6,7 +6,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.roleparty.campaign.frontend.component.resources.*
-import app.roleparty.core.designsystem.divider.HorizontalDivider
 import app.roleparty.core.designsystem.icon.IconVector
 import app.roleparty.core.designsystem.navigation.SidenavItem
 import app.roleparty.core.designsystem.text.Text
@@ -31,6 +30,7 @@ fun PlayedCampaignLayout(
     onSectionSelect: (PlayedCampaignSection) -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit,
 ) {
     Row(modifier = modifier.fillMaxSize().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -55,9 +55,16 @@ fun PlayedCampaignLayout(
             SidenavItem(icon = IconVector.PREVIOUS, label = stringResource(Res.string.exit), selected = false, onClick = onExit)
         }
         Column(modifier = Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column(modifier = Modifier.fillMaxWidth().height(64.dp), verticalArrangement = Arrangement.Center) {
-                Text(text = characterName, style = Theme.typography.headline, maxLines = 1)
-                Text(text = stringResource(Res.string.character_level, characterLevel), style = Theme.typography.subtitle)
+            Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.height(64.dp), verticalArrangement = Arrangement.Center) {
+                    Text(text = characterName, style = Theme.typography.headline, maxLines = 1)
+                    Text(
+                        text = stringResource(Res.string.character_level, characterLevel),
+                        style = Theme.typography.subtitle
+                    )
+                }
+                Spacer(Modifier.weight(1f))
+                actions()
             }
             Box(modifier = Modifier.weight(1f).fillMaxWidth(), content = content)
         }

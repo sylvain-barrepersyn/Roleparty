@@ -9,6 +9,8 @@ import app.roleparty.campaign.frontend.component.played.PlayedCampaignLayout
 import app.roleparty.campaign.library.frontend.container.journal.JournalContainer
 import app.roleparty.campaign.frontend.component.played.PlayedCampaignSection
 import app.roleparty.campaign.creature.frontend.component.playercharacter.PlayerCharacterSheet
+import app.roleparty.campaign.tabletop.frontend.container.TabletopParticipation
+import app.roleparty.campaign.tabletop.frontend.container.access.TabletopAccessContainer
 import app.roleparty.core.designsystem.feedback.FullScreenLoader
 import app.roleparty.core.designsystem.layout.DetailPane
 import app.roleparty.core.frontend.container.Container
@@ -37,6 +39,7 @@ class PlayedCampaignContainer(
                 section = state.section,
                 onSectionSelect = { handle(PlayedCampaignAction.ShowSection(it)) },
                 onExit = { handle(PlayedCampaignAction.Exit) },
+                actions = { TabletopAccessContainer(campaignId, TabletopParticipation.Player(playerCharacterId)).Render() },
             ) {
                 Navigation(backStack = listOf(state.section), onBack = { handle(PlayedCampaignAction.Exit) }) { section ->
                     when (section) {

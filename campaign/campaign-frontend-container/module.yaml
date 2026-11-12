@@ -17,6 +17,7 @@ dependencies:
   - //campaign/campaign-creature/campaign-creature-frontend-container
   - //campaign/campaign-library/campaign-library-frontend-container
   - //campaign/campaign-story/campaign-story-frontend-container
+  - //campaign/campaign-tabletop/campaign-tabletop-frontend-container
   - //media/media-frontend-container
   - //security/security-frontend-container
 

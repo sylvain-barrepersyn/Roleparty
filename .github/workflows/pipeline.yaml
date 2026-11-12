@@ -122,7 +122,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: .github/scripts/prepare-conveyor-inputs.sh | grep '^SKIKO_VERSION=' >> "$GITHUB_ENV"
+      - run: .github/scripts/prepare-conveyor-inputs.sh | grep -E '^(SKIKO|WEBRTC_JAVA)_VERSION=' >> "$GITHUB_ENV"
       - uses: hydraulic-software/conveyor/actions/build@v22.4
         env:
           ROLEPARTY_VERSION: ${{ needs.version.outputs.version }}

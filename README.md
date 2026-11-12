@@ -123,6 +123,9 @@ Each variable can instead be read from a file (a Docker secret, for example) by 
 | `ALERT_EMAIL_ADDRESS` | no | Receives an email when a dead-letter queue grows. An error is logged either way |
 | `TRUST_PROXY` | no | Set to `true` only behind exactly one trusted reverse proxy, so that rate limits use the real client IP. Without it, all clients behind the proxy share one limit |
 | `JWT_PREVIOUS_PUBLIC_KEY` | no | Previous public key, during a key rotation |
+| `TABLETOP_ICE_SERVER_URLS` | no | Comma-separated STUN/TURN URLs the desktop apps use to reach each other at the tabletop. Defaults to `stun:stun.l.google.com:19302`; set it empty to stay on a local network. Without a TURN server, people behind a strict NAT can't join |
+| `TABLETOP_ICE_SERVER_USERNAME` | no | Username for the TURN server, sent to the participants of a tabletop |
+| `TABLETOP_ICE_SERVER_CREDENTIAL` | no | Credential for the TURN server, sent to the participants of a tabletop |
 
 Postgres and RabbitMQ must be reachable when the backend starts. The port is set in `application/application-backend/resources/application.yaml`.
 

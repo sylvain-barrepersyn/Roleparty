@@ -1,0 +1,34 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/compose-project.module-template.yaml
+  - //[module-templates]/serialization-configuration.module-template.yaml
+
+settings:
+  ktor: enabled
+  kotlin:
+    serialization:
+      format: json
+
+dependencies:
+  - //core/core-frontend-container: exported
+  - //campaign/campaign-tabletop/campaign-tabletop-frontend-component: exported
+  - //media/media-frontend-container
+  - //security/security-frontend-container
+  - $libs.ktor.client.webrtc
+  - dev.onvoid.webrtc:webrtc-java:0.16.0:macos-aarch64: runtime-only
+  - dev.onvoid.webrtc:webrtc-java:0.16.0:macos-x86_64: runtime-only
+  - dev.onvoid.webrtc:webrtc-java:0.16.0:windows-x86_64: runtime-only
+  - dev.onvoid.webrtc:webrtc-java:0.16.0:linux-x86_64: runtime-only
+
+test-dependencies:
+  - //core/core-test
+  - //campaign/campaign-tabletop/campaign-tabletop-infrastructure
+  - //campaign/campaign-tabletop/campaign-tabletop-test
+  - $compose.desktop.currentOs
+  - $libs.kotlinx.coroutines.test
+  - $ktor.client.cio
+  - $ktor.server.netty
+  - $ktor.server.contentNegotiation
+  - $ktor.server.websockets
+  - $ktor.serialization.kotlinx.json

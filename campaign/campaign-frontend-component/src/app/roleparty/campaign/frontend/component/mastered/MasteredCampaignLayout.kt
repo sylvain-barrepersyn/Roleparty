@@ -33,6 +33,7 @@ fun MasteredCampaignLayout(
     onSectionSelect: (MasteredCampaignSection) -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable BoxScope.() -> Unit,
 ) {
     Row(modifier = modifier.fillMaxSize().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -75,6 +76,7 @@ fun MasteredCampaignLayout(
                     )
                 }
                 Spacer(Modifier.weight(1f))
+                actions()
             }
             Box(modifier = Modifier.weight(1f).fillMaxWidth(), content = content)
         }

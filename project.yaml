@@ -6,6 +6,7 @@ modules:
   - campaign/campaign-creature/*
   - campaign/campaign-library/*
   - campaign/campaign-story/*
+  - campaign/campaign-tabletop/*
   - communication/*
   - core/*
   - media/*

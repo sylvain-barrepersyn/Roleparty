@@ -6,6 +6,7 @@ exposed = "1.6.1"
 flyway = "13.12.1"
 kotest = "6.2.6"
 kotlinx-html = "0.12.0"
+ktor = "3.6.0"
 koin = "4.2.1"
 kotlinx-datetime = "0.7.1"
 kotlinx-coroutines = "1.11.0"
@@ -39,6 +40,7 @@ java-jwt = { module = "com.auth0:java-jwt", version.ref = "auth0-jwt" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+ktor-client-webrtc = { module = "io.ktor:ktor-client-webrtc", version.ref = "ktor" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinx-html" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }

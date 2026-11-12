@@ -8,6 +8,7 @@ import app.roleparty.campaign.frontend.container.data.HttpCampaignApi
 import app.roleparty.campaign.frontend.container.joining.CampaignJoiningViewModel
 import app.roleparty.campaign.library.frontend.container.libraryFrontendModule
 import app.roleparty.campaign.story.frontend.container.storyFrontendModule
+import app.roleparty.campaign.tabletop.frontend.container.tabletopFrontendModule
 import app.roleparty.campaign.frontend.container.mastered.MasteredCampaignViewModel
 import app.roleparty.campaign.frontend.container.played.PlayedCampaignViewModel
 import app.roleparty.campaign.frontend.container.selection.CampaignSelectionViewModel
@@ -18,7 +19,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val campaignFrontendModule = module {
-    includes(agendaFrontendModule, creatureFrontendModule, libraryFrontendModule, storyFrontendModule)
+    includes(agendaFrontendModule, creatureFrontendModule, libraryFrontendModule, storyFrontendModule, tabletopFrontendModule)
     single<CampaignApi> { HttpCampaignApi(get<AuthenticatedBackend>().httpClient) }
     viewModel { CampaignSelectionViewModel(get()) }
     viewModelOf(::CampaignCreationViewModel)

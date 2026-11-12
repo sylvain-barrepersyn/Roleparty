@@ -57,6 +57,7 @@ fun Agenda(
     modifier: Modifier = Modifier,
     onOpenScheduling: (() -> Unit)? = null,
     onNameChange: ((String) -> Unit)? = null,
+    sessionToolbar: (@Composable RowScope.(GameSessionResponseBody) -> Unit)? = null,
 ) {
     val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
 
@@ -79,7 +80,7 @@ fun Agenda(
             if (selected == null) {
                 CenteredBox { Text(stringResource(Res.string.select_session)) }
             } else {
-                DetailPane {
+                DetailPane(toolbar = sessionToolbar?.let { toolbar -> { toolbar(selected) } }) {
                     Text(text = selected.date.formatted(), style = Theme.typography.headline)
                     error?.let { Callout(text = it, kind = CalloutKind.ERROR, modifier = Modifier.fillMaxWidth()) }
                     if (onNameChange != null) {

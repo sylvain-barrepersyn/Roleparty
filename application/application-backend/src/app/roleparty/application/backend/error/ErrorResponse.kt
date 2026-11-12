@@ -7,6 +7,7 @@ import app.roleparty.campaign.creature.domain.model.CreatureError
 import app.roleparty.campaign.domain.model.CampaignError
 import app.roleparty.campaign.library.domain.model.LibraryError
 import app.roleparty.campaign.story.domain.model.StoryError
+import app.roleparty.campaign.tabletop.domain.model.TabletopError
 import app.roleparty.communication.commons.CommunicationError
 import app.roleparty.media.domain.model.MediaError
 import app.roleparty.security.domain.model.SecurityError
@@ -108,6 +109,17 @@ fun LibraryError.localize(locale: Locale) = when (this) {
     is LibraryError.PlayerCharacterNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.player-character-not-found", locale, playerCharacterId)
     LibraryError.PlayerCharacterOwnerRequired -> localize(HttpStatusCode.Forbidden, "campaign.creature.player-character-owner-required", locale)
     is LibraryError.JournalEntryNotFound -> localize(HttpStatusCode.NotFound, "campaign.library.journal-entry-not-found", locale, journalEntryId)
+}
+
+fun TabletopError.localize(locale: Locale) = when (this) {
+    is TabletopError.CampaignNotFound -> localize(HttpStatusCode.NotFound, "campaign.not-found", locale, campaignId)
+    TabletopError.GameMasterRequired -> localize(HttpStatusCode.Forbidden, "campaign.game-master-required", locale)
+    TabletopError.ParticipantRequired -> localize(HttpStatusCode.Forbidden, "campaign.participant-required", locale)
+    is TabletopError.GameSessionNotFound -> localize(HttpStatusCode.NotFound, "campaign.agenda.game-session-not-found", locale, gameSessionId)
+    TabletopError.GameSessionAlreadyStarted -> localize(HttpStatusCode.Conflict, "campaign.tabletop.game-session-already-started", locale)
+    TabletopError.GameSessionNotStarted -> localize(HttpStatusCode.Conflict, "campaign.tabletop.game-session-not-started", locale)
+    TabletopError.PlayerCharacterRequired -> localize(HttpStatusCode.BadRequest, "campaign.tabletop.player-character-required", locale)
+    is TabletopError.PlayerCharacterNotFound -> localize(HttpStatusCode.NotFound, "campaign.creature.player-character-not-found", locale, playerCharacterId)
 }
 
 fun MediaError.localize(locale: Locale) = when (this) {

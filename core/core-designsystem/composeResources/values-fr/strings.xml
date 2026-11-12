@@ -10,4 +10,8 @@
     <string name="bulleted_list">Liste à puces</string>
     <string name="paragraph_text">Texte</string>
     <string name="paragraph_handle">Glisser pour déplacer, cliquer pour changer le type</string>
+    <string name="toast_success">Succès</string>
+    <string name="toast_error">Erreur</string>
+    <string name="toast_info">Information</string>
+    <string name="toast_warning">Avertissement</string>
 </resources>

@@ -16,11 +16,16 @@ import json, pathlib, re, shutil, sys
 target, state = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 jars = [pathlib.Path(file) for file in json.loads(state.read_text())["inputFiles"] if file.endswith(".jar")]
 skiko = None
+webrtc = None
 
 for jar in jars:
     runtime = re.fullmatch(r"skiko-awt-runtime-[a-z]+-[a-z0-9]+-(.+)\.jar", jar.name)
     if runtime:
         skiko = runtime.group(1)
+        continue
+    native = re.fullmatch(r"webrtc-java-(.+)-(?:linux|macos|windows)-[a-z0-9_]+\.jar", jar.name)
+    if native:
+        webrtc = native.group(1)
         continue
     destination = target / jar.name
     if destination.exists():
@@ -31,5 +36,8 @@ for jar in jars:
 
 if skiko is None:
     sys.exit("The Skiko runtime is missing from the classpath")
+if webrtc is None:
+    sys.exit("The WebRTC native library is missing from the classpath")
 print(f"SKIKO_VERSION={skiko}")
+print(f"WEBRTC_JAVA_VERSION={webrtc}")
 PYTHON

@@ -9,6 +9,9 @@ import app.roleparty.campaign.frontend.component.mastered.MasteredCampaignSectio
 import app.roleparty.campaign.frontend.container.settings.CampaignSettingsContainer
 import app.roleparty.campaign.library.frontend.container.library.LibraryContainer
 import app.roleparty.campaign.story.frontend.container.scene.ScenesContainer
+import app.roleparty.campaign.tabletop.frontend.container.TabletopParticipation
+import app.roleparty.campaign.tabletop.frontend.container.access.TabletopAccessContainer
+import app.roleparty.campaign.tabletop.frontend.container.starting.GameSessionStartingContainer
 import app.roleparty.core.designsystem.feedback.FullScreenLoader
 import app.roleparty.core.frontend.container.Container
 import app.roleparty.core.frontend.container.Navigation
@@ -35,10 +38,14 @@ class MasteredCampaignContainer(
                 section = state.section,
                 onSectionSelect = { handle(MasteredCampaignAction.ShowSection(it)) },
                 onExit = { handle(MasteredCampaignAction.Exit) },
+                actions = { TabletopAccessContainer(campaignId, TabletopParticipation.GameMaster).Render() },
             ) {
                 Navigation(backStack = listOf(state.section), onBack = { handle(MasteredCampaignAction.Exit) }) { section ->
                     when (section) {
-                        MasteredCampaignSection.AGENDA -> AgendaContainer(campaignId).Render()
+                        MasteredCampaignSection.AGENDA -> AgendaContainer(
+                            campaignId = campaignId,
+                            sessionToolbar = { gameSessionId -> GameSessionStartingContainer(campaignId, gameSessionId).Render() },
+                        ).Render()
                         MasteredCampaignSection.SCENES -> ScenesContainer(campaignId).Render()
                         MasteredCampaignSection.LIBRARY -> LibraryContainer(campaignId).Render()
                         MasteredCampaignSection.CREATURES -> CreaturesContainer(campaignId).Render()

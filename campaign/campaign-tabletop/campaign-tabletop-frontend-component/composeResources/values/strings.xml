@@ -1,0 +1,16 @@
+<resources>
+    <string name="start_session">Start session</string>
+    <string name="session_started">Session started</string>
+    <string name="game_session_started">Game session ‘%1$s’ has been started</string>
+    <string name="open_tabletop">Open Tabletop</string>
+    <string name="tabletop_title">Tabletop — %1$s</string>
+    <string name="game_master">Game master</string>
+    <string name="joining">Joining the table…</string>
+    <string name="waiting_for_game_master">Waiting for the game master…</string>
+    <string name="turn_camera_on">Turn camera on</string>
+    <string name="turn_camera_off">Turn camera off</string>
+    <string name="turn_microphone_on">Turn microphone on</string>
+    <string name="turn_microphone_off">Turn microphone off</string>
+    <string name="camera_unavailable">The camera can’t be used: check that it is plugged in and allowed for Roleparty.</string>
+    <string name="microphone_unavailable">The microphone can’t be used: check that it is plugged in and allowed for Roleparty.</string>
+</resources>

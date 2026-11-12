@@ -1,0 +1,14 @@
+product: jvm/lib
+
+apply:
+  - //[module-templates]/compose-project.module-template.yaml
+
+settings:
+  compose:
+    resources:
+      packageName: app.roleparty.campaign.tabletop.frontend.component.resources
+
+dependencies:
+  - //core/core-designsystem: exported
+  - //campaign/campaign-tabletop/campaign-tabletop-contract-web: exported
+  - //media/media-frontend-component: exported

@@ -1,6 +1,7 @@
 package app.roleparty.campaign.agenda.frontend.container.agenda
 
 import androidx.compose.runtime.Composable
+import app.roleparty.campaign.agenda.commons.GameSessionId
 import app.roleparty.campaign.agenda.frontend.component.Agenda
 import app.roleparty.campaign.commons.CampaignId
 import app.roleparty.core.designsystem.feedback.FullScreenLoader
@@ -8,7 +9,11 @@ import app.roleparty.core.frontend.container.Container
 import app.roleparty.core.frontend.container.RetryableFailure
 import app.roleparty.core.frontend.container.message
 
-class AgendaContainer(campaignId: CampaignId, private val editable: Boolean = true) :
+class AgendaContainer(
+    campaignId: CampaignId,
+    private val editable: Boolean = true,
+    private val sessionToolbar: (@Composable (GameSessionId) -> Unit)? = null,
+) :
     Container<AgendaState, AgendaAction, AgendaEvent, AgendaViewModel>(AgendaViewModel::class, campaignId) {
 
     @Composable
@@ -30,6 +35,7 @@ class AgendaContainer(campaignId: CampaignId, private val editable: Boolean = tr
                 onDigitalGamingTableChange = { handle(AgendaAction.ChangeDigitalGamingTable(it)) },
                 onOpenScheduling = if (editable) { { handle(AgendaAction.OpenScheduling) } } else null,
                 onNameChange = if (editable) { { handle(AgendaAction.ChangeName(it)) } } else null,
+                sessionToolbar = sessionToolbar?.let { toolbar -> { session -> toolbar(session.id) } },
             )
         }
     }

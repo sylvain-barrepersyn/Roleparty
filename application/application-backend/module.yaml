@@ -16,6 +16,7 @@ dependencies:
   - //campaign/campaign-creature/campaign-creature-infrastructure
   - //campaign/campaign-library/campaign-library-infrastructure
   - //campaign/campaign-story/campaign-story-infrastructure
+  - //campaign/campaign-tabletop/campaign-tabletop-infrastructure
   - //communication/communication-commons
   - //communication/communication-hostinger
   - //media/media-infrastructure

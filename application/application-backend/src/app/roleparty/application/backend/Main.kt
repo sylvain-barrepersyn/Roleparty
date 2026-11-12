@@ -10,6 +10,7 @@ import app.roleparty.application.backend.error.LocalizedLibrary
 import app.roleparty.application.backend.error.LocalizedMedia
 import app.roleparty.application.backend.error.LocalizedSecurity
 import app.roleparty.application.backend.error.LocalizedStory
+import app.roleparty.application.backend.error.LocalizedTabletop
 import app.roleparty.campaign.agenda.infrastructure.loadAgendaModule
 import app.roleparty.campaign.agenda.infrastructure.serveAgendaRoutes
 import app.roleparty.campaign.creature.infrastructure.loadCreatureModule
@@ -20,6 +21,8 @@ import app.roleparty.campaign.library.infrastructure.loadLibraryModule
 import app.roleparty.campaign.library.infrastructure.serveLibraryRoutes
 import app.roleparty.campaign.story.infrastructure.loadStoryModule
 import app.roleparty.campaign.story.infrastructure.serveStoryRoutes
+import app.roleparty.campaign.tabletop.infrastructure.loadTabletopModule
+import app.roleparty.campaign.tabletop.infrastructure.serveTabletopRoutes
 import app.roleparty.communication.commons.Email
 import app.roleparty.communication.commons.EmailAddress
 import app.roleparty.communication.commons.EmailSender
@@ -68,6 +71,7 @@ fun Application.backend(env: Map<String, String>, emailSender: EmailSender) {
     serveAgendaRoutes(loadAgendaModule(postgres), LocalizedAgenda)
     serveCreatureRoutes(loadCreatureModule(postgres), LocalizedCreature)
     serveLibraryRoutes(loadLibraryModule(postgres), LocalizedLibrary)
+    serveTabletopRoutes(loadTabletopModule(postgres), LocalizedTabletop, env)
 
     loadOutbox(postgres, rabbitMq)
     alertOnDeadLetters(rabbitMq, emailSender, env)

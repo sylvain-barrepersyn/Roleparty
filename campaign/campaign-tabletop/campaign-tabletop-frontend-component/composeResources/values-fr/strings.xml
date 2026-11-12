@@ -1,0 +1,16 @@
+<resources>
+    <string name="start_session">Démarrer la séance</string>
+    <string name="session_started">Séance démarrée</string>
+    <string name="game_session_started">La séance « %1$s » a démarré</string>
+    <string name="open_tabletop">Ouvrir la table</string>
+    <string name="tabletop_title">Table de jeu — %1$s</string>
+    <string name="game_master">MJ</string>
+    <string name="joining">Installation à la table…</string>
+    <string name="waiting_for_game_master">En attente du MJ…</string>
+    <string name="turn_camera_on">Activer la caméra</string>
+    <string name="turn_camera_off">Désactiver la caméra</string>
+    <string name="turn_microphone_on">Activer le micro</string>
+    <string name="turn_microphone_off">Désactiver le micro</string>
+    <string name="camera_unavailable">La caméra est inutilisable : vérifiez qu’elle est branchée et autorisée pour Roleparty.</string>
+    <string name="microphone_unavailable">Le micro est inutilisable : vérifiez qu’il est branché et autorisé pour Roleparty.</string>
+</resources>

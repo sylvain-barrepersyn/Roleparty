@@ -17,6 +17,7 @@ import app.roleparty.campaign.library.commons.JournalEntryId
 import app.roleparty.campaign.library.commons.LibraryEntryId
 import app.roleparty.campaign.library.domain.model.LibraryError
 import app.roleparty.campaign.story.domain.model.StoryError
+import app.roleparty.campaign.tabletop.domain.model.TabletopError
 import app.roleparty.communication.commons.CommunicationError
 import app.roleparty.communication.commons.EmailAddress
 import app.roleparty.media.commons.ImageFormat
@@ -110,6 +111,11 @@ class ErrorResponseTest {
         ErrorCase("OthersPresenceForbidden") { AgendaError.OthersPresenceForbidden.localize(it) },
         ErrorCase("ParticipantNotFound") { AgendaError.ParticipantNotFound(AccountId.generate()).localize(it) },
         ErrorCase("GameMasterCannotBeAbsent") { AgendaError.GameMasterCannotBeAbsent.localize(it) },
+        ErrorCase("GameSessionAlreadyStarted") { TabletopError.GameSessionAlreadyStarted.localize(it) },
+        ErrorCase("GameSessionNotStarted") { TabletopError.GameSessionNotStarted.localize(it) },
+        ErrorCase("PlayerCharacterRequired") { TabletopError.PlayerCharacterRequired.localize(it) },
+        ErrorCase("Tabletop.GameSessionNotFound") { TabletopError.GameSessionNotFound(GameSessionId.generate()).localize(it) },
+        ErrorCase("Tabletop.PlayerCharacterNotFound") { TabletopError.PlayerCharacterNotFound(PlayerCharacterId.generate()).localize(it) },
         ErrorCase("BlankTitle") { LibraryError.BlankTitle.localize(it) },
         ErrorCase("LibraryEntryNotFound") { LibraryError.LibraryEntryNotFound(LibraryEntryId.generate()).localize(it) },
         ErrorCase("Library.PlayerCharacterNotFound") { LibraryError.PlayerCharacterNotFound(PlayerCharacterId.generate()).localize(it) },

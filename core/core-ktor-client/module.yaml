@@ -15,6 +15,7 @@ dependencies:
   - $ktor.client.core: exported
   - $ktor.client.contentNegotiation
   - $ktor.client.resources: exported
+  - $ktor.client.websockets: exported
   - $ktor.serialization.kotlinx.json
 
 test-dependencies:
