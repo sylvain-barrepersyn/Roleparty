@@ -74,6 +74,14 @@ curl -H 'Content-Type: application/json' \
 
 Docker must be running, as integration tests start their own Postgres and RabbitMQ containers. No real email is sent.
 
+The tabletop tests load the native WebRTC library. On Linux it needs these system libraries, which a desktop usually has but a bare server or CI image may not:
+
+```sh
+sudo apt-get install -y --no-install-recommends \
+  libpulse0 libudev1 libx11-6 libxext6 libxfixes3 libxdamage1 libxtst6 libxrandr2 libxcomposite1 \
+  libdbus-1-3 libglib2.0-0 libgbm1 libdrm2
+```
+
 ## Deploy to production
 
 Don't reuse anything from `[environment]/local/backend.env`: its secrets are public. Never set `EMAIL_SENDER=log` in production, as it writes verification and reset codes to the logs.

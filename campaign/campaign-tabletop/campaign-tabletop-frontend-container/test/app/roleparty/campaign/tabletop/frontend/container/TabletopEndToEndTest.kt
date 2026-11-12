@@ -24,7 +24,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
@@ -208,7 +207,8 @@ class TabletopEndToEndTest : FunSpec() {
         WebRtcTabletopCall(api, campaignId, playerCharacterId, { headlessMedia(camera) }, Dispatchers.Default, 200.milliseconds)
 
     private suspend fun WebRtcTabletopCall.attended(vararg attendees: AttendeeBody) {
-        withTimeout(30.seconds) { status.first { (it as? TableStatus.Joined)?.attendees == attendees.toList() } }
+        val reached = withTimeout(30.seconds) { status.first { it is TableStatus.Refused || (it as? TableStatus.Joined)?.attendees == attendees.toList() } }
+        check(reached is TableStatus.Joined) { "The seat was refused: $reached" }
     }
 
     private suspend fun WebRtcTabletopCall.refused(): BackendFailure =
